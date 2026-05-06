@@ -1,0 +1,89 @@
+@import "tailwindcss";
+@import "../../theme.css";
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-midnight);
+  background: var(--color-warm-stone);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--color-midnight);
+  letter-spacing: -0.02em;
+}
+
+/* FeatureCard style */
+.feature-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-stone-border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+/* Message Styles */
+.msg-user {
+  background: var(--color-white);
+  border: 1px solid var(--color-sky-blue);
+  box-shadow: inset 0 0 0 1px rgba(14, 165, 233, 0.1);
+  border-radius: var(--radius-xl);
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.msg-assistant {
+  background: var(--color-stone-surface);
+  border: 1px solid var(--color-stone-border);
+  border-radius: var(--radius-xl);
+  border-bottom-left-radius: var(--radius-sm);
+}
+
+/* Nav Link */
+.nav-link-orange {
+  color: var(--color-ember-orange);
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.nav-link-orange:hover {
+  opacity: 0.8;
+}
+
+/* Send Button Pill */
+.btn-pill-dark {
+  background: var(--color-midnight);
+  color: var(--color-white);
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-pill-dark:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+}
+
+/* Blobs */
+@keyframes blob-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(0.95); }
+}
+.blob-loader div {
+  width: 12px;
+  height: 12px;
+  background-color: var(--color-sky-blue);
+  border-radius: 50%;
+  animation: blob-bounce 1s cubic-bezier(0.19, 1, 0.22, 1) infinite;
+}
+.blob-loader div:nth-child(2) { animation-delay: 0.15s; }
+.blob-loader div:nth-child(3) { animation-delay: 0.3s; }
