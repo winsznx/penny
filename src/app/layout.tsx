@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
-import { Inter, SF_Pro_Display } from "next/font/google"; // Since SuisseIntl isn't on google fonts, using default or Inter.
-import localFont from 'next/font/local';
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/700.css";
+import "@fontsource/space-grotesk/400.css";
+import "@fontsource/space-grotesk/700.css";
+import "@fontsource/jetbrains-mono/400.css";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
-// Using Inter as fallback for display since SuisseIntl is custom
-const display = Inter({ subsets: ["latin"], variable: "--font-display" });
 
 export const metadata: Metadata = {
   title: "Penny — Pay-per-message AI",
-  description: "Premium AI chat without the monthly subscription.",
+  description: "Premium AI chat without the monthly subscription. Pay only when it answers.",
 };
 
 export default function RootLayout({
@@ -19,9 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${display.variable}`}>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
