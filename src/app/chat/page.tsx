@@ -8,7 +8,7 @@ export default function Chat() {
         <div className="flex items-center gap-4">
           <Link href="/" className="text-stone-text hover:text-midnight font-medium">← Back</Link>
           <div className="font-display font-bold text-xl tracking-tight">Penny</div>
-          <span className="text-xs bg-sky-blue/10 text-sky-blue px-2 py-1 rounded font-medium ml-2">Haiku 3.0</span>
+          <span className="text-xs bg-sky-blue/10 text-sky-blue px-2 py-1 rounded font-medium ml-2" title="0.001 cUSD per message at this tier">Haiku 4.5</span>
         </div>
         
         <div className="flex items-center gap-4">
