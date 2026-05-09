@@ -1,21 +1,23 @@
 import Link from "next/link";
+import { BalancePill } from "@/components/BalancePill";
+import { ConnectButton } from "@/components/ConnectButton";
+import { TopUpButton } from "@/components/TopUpButton";
 
 export default function Chat() {
   return (
     <main className="min-h-screen bg-warm-stone text-midnight font-body flex flex-col h-screen">
       {/* Navigation / Header */}
-      <header className="px-6 py-4 flex justify-between items-center w-full bg-white border-b border-stone-border shrink-0 shadow-sm z-10">
+      <header className="px-6 py-4 flex flex-wrap justify-between items-center w-full bg-white border-b border-stone-border shrink-0 shadow-sm z-10 gap-3">
         <div className="flex items-center gap-4">
           <Link href="/" className="text-stone-text hover:text-midnight font-medium">← Back</Link>
           <div className="font-display font-bold text-xl tracking-tight">Penny</div>
           <span className="text-xs bg-sky-blue/10 text-sky-blue px-2 py-1 rounded font-medium ml-2" title="0.001 cUSD per message at this tier">Haiku 4.5</span>
         </div>
-        
-        <div className="flex items-center gap-4">
-          <div className="bg-stone-surface px-4 py-2 rounded-full font-mono text-sm text-stone-text border border-stone-border flex items-center gap-2 shadow-inner">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            Balance: <span className="text-midnight font-bold">$2.50</span>
-          </div>
+
+        <div className="flex items-center gap-3 flex-wrap">
+          <BalancePill />
+          <TopUpButton />
+          <ConnectButton />
         </div>
       </header>
 
