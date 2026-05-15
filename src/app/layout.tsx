@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
 import "@fontsource/space-grotesk/400.css";
@@ -11,6 +11,9 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://penny.timjosh507.w
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  manifest: "/manifest.json",
+  applicationName: "Penny",
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "Penny" },
   title: "Penny — Pay-per-message AI",
   description: "Premium AI chat without the monthly subscription. Pay only when it answers.",
   openGraph: {
@@ -31,6 +34,12 @@ export const metadata: Metadata = {
     "talentapp:project_verification":
       "7076270205c056ef5f0abf111afc17f757b0d83451a9c92ab2780a1e3531d2622ac21dfad4b76950e35a68d5a2ac10862a07a056f8415a6badb2f49e15f5e002",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#F5F1EB",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
