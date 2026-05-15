@@ -1,0 +1,20 @@
+{
+  "name": "Penny — Pay-per-message AI",
+  "short_name": "Penny",
+  "description": "Pay only when it answers. Per-message AI billing in cUSD on Celo.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F1EB",
+  "theme_color": "#F5F1EB",
+  "categories": ["productivity", "education"],
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Open chat", "url": "/chat", "description": "Start a per-message paid conversation" }
+  ]
+}
