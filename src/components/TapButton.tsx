@@ -1,0 +1,97 @@
+"use client";
+
+import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { pennyAbi } from "@/lib/abi/penny";
+import { PENNY_ADDRESS, isPennyDeployed } from "@/lib/wagmi";
+
+const COOLDOWN_SEC = 18 * 60 * 60; // matches Penny.TAP_COOLDOWN
+
+/**
+ * Penny's "tap" retention loop — read-tap-write pattern. Reads `lastTap` and
+ * `tapStreak` so the user sees their current run and an honest cooldown.
+ * Disables itself client-side when the cooldown is unmet (chain enforces too).
+ */
+export function TapButton() {
+  const { address, isConnected } = useAccount();
+
+  const { data: last } = useReadContract({
+    abi: pennyAbi,
+    address: PENNY_ADDRESS,
+    functionName: "lastTap",
+    args: address ? [address] : undefined,
+    query: { enabled: isConnected && isPennyDeployed && !!address, refetchInterval: 60_000 },
+  });
+
+  const { data: run } = useReadContract({
+    abi: pennyAbi,
+    address: PENNY_ADDRESS,
+    functionName: "tapStreak",
+    args: address ? [address] : undefined,
+    query: { enabled: isConnected && isPennyDeployed && !!address, refetchInterval: 60_000 },
+  });
+
+  const { writeContract, data: hash, isPending, reset } = useWriteContract();
+  const { isLoading: mining, isSuccess } = useWaitForTransactionReceipt({ hash });
+
+  const lastTs = typeof last === "bigint" ? Number(last) : 0;
+  const nowSec = Math.floor(Date.now() / 1000);
+  const secondsLeft = lastTs === 0 ? 0 : Math.max(0, lastTs + COOLDOWN_SEC - nowSec);
+  const onCooldown = secondsLeft > 0;
+  const runVal = run !== undefined ? Number(run) : 0;
+
+  const canSubmit = isConnected && isPennyDeployed && !onCooldown && !mining && !isPending;
+
+  function submit() {
+    writeContract({
+      abi: pennyAbi,
+      address: PENNY_ADDRESS,
+      functionName: "tap",
+      args: [],
+    });
+  }
+
+  const cta = mining
+    ? "Tapping…"
+    : isPending
+      ? "Confirm in wallet…"
+      : isSuccess
+        ? "Tapped ✓"
+        : onCooldown
+          ? `Wait ${prettyDuration(secondsLeft)}`
+          : !isConnected
+            ? "Connect to tap"
+            : !isPennyDeployed
+              ? "Contract offline"
+              : "Tap for credits";
+
+  return (
+    <div className="feature-card flex items-center justify-between gap-4">
+      <div>
+        <div className="text-xs uppercase tracking-widest text-stone-text mb-1">
+          Daily tap streak
+        </div>
+        <div className="font-display font-bold text-2xl text-midnight">{runVal}</div>
+      </div>
+      <button
+        type="button"
+        onClick={submit}
+        disabled={!canSubmit}
+        className="btn-pill-dark text-sm disabled:opacity-40"
+      >
+        {cta}
+      </button>
+      {hash && (
+        <button type="button" onClick={() => reset()} className="text-xs text-stone-text underline">
+          reset
+        </button>
+      )}
+    </div>
+  );
+}
+
+function prettyDuration(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+}
