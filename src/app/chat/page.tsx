@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BalancePill } from "@/components/BalancePill";
+import { ChatComposer } from "@/components/ChatComposer";
 import { ConnectButton } from "@/components/ConnectButton";
 import { TopUpButton } from "@/components/TopUpButton";
 
@@ -68,31 +69,7 @@ export default function Chat() {
       </div>
 
       {/* Input Area */}
-      <div className="w-full bg-white border-t border-stone-border p-4 md:p-6 shrink-0">
-        <div className="max-w-3xl mx-auto relative">
-          <div className="absolute -top-10 left-0 right-0 flex justify-center pointer-events-none">
-            <div className="bg-sky-blue text-white text-xs font-mono px-3 py-1 rounded-t-lg shadow-sm">
-              Estimated cost: ~$0.01
-            </div>
-          </div>
-          
-          <div className="bg-warm-stone border border-stone-border rounded-xl p-2 flex items-end gap-2 shadow-sm focus-within:border-sky-blue focus-within:ring-2 focus-within:ring-sky-blue/20 transition-all">
-            <textarea 
-              placeholder="Message Penny..." 
-              className="flex-1 bg-transparent border-none outline-none px-4 py-3 min-h-[50px] max-h-[150px] resize-none font-body text-midnight"
-              rows={1}
-              defaultValue="How do I deploy one?"
-            />
-            <button className="bg-sky-blue hover:bg-sky-blue/90 text-white rounded-lg p-3 m-1 transition-colors shadow-sm flex items-center justify-center self-end">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-            </button>
-          </div>
-          
-          <div className="text-center mt-3 text-xs text-stone-text/70">
-            AI can make mistakes. Paid messages are debited directly from your cUSD balance.
-          </div>
-        </div>
-      </div>
+      <ChatComposer />
     </main>
   );
 }
