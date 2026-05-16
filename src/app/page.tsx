@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { MilestonePanel } from "@/components/MilestonePanel";
+import { TapButton } from "@/components/TapButton";
 
 export default function Home() {
   return (
@@ -60,9 +62,9 @@ export default function Home() {
           <h2 className="text-xl font-display font-medium mb-6 text-stone-text uppercase tracking-widest text-center">Try Penny instantly</h2>
           
           <div className="w-full max-w-2xl bg-warm-stone border border-stone-border rounded-xl p-4 flex gap-3 shadow-inner">
-            <input 
-              type="text" 
-              placeholder="Ask anything (e.g. explain quantum computing in simple terms)" 
+            <input
+              type="text"
+              placeholder="Ask anything (e.g. explain quantum computing in simple terms)"
               className="flex-1 bg-white border border-stone-border rounded-lg px-4 py-3 outline-none focus:border-sky-blue focus:ring-2 focus:ring-sky-blue/20 transition-all font-body text-midnight"
               readOnly
             />
@@ -71,6 +73,11 @@ export default function Home() {
             </button>
           </div>
         </div>
+      </section>
+
+      <section className="px-6 pt-2 pb-16 max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-4">
+        <TapButton />
+        <MilestonePanel />
       </section>
     </main>
   );
