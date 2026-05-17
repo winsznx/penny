@@ -10,9 +10,16 @@ export default function Chat() {
       {/* Navigation / Header */}
       <header className="px-6 py-4 flex flex-wrap justify-between items-center w-full bg-white border-b border-stone-border shrink-0 shadow-sm z-10 gap-3">
         <div className="flex items-center gap-4">
-          <Link href="/" className="text-stone-text hover:text-midnight font-medium">← Back</Link>
+          <Link href="/" className="text-stone-text hover:text-midnight font-medium">
+            ← Back
+          </Link>
           <div className="font-display font-bold text-xl tracking-tight">Penny</div>
-          <span className="text-xs bg-sky-blue/10 text-sky-blue px-2 py-1 rounded font-medium ml-2" title="0.001 cUSD per message at this tier">Haiku 4.5</span>
+          <span
+            className="text-xs bg-sky-blue/10 text-sky-blue px-2 py-1 rounded font-medium ml-2"
+            title="Default tier — $0.001 cUSD per message"
+          >
+            Haiku 4.5
+          </span>
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
@@ -22,49 +29,30 @@ export default function Chat() {
         </div>
       </header>
 
-      {/* Chat Area */}
+      {/* Empty state — no fake transcript */}
       <div className="flex-1 overflow-y-auto p-6 md:p-10 scroll-smooth">
-        <div className="max-w-3xl mx-auto space-y-8 flex flex-col pb-4">
-          
-          {/* Welcome Message */}
-          <div className="flex justify-start">
-            <div className="msg-assistant p-5 max-w-[85%] text-base leading-relaxed text-stone-text">
-              <p>Hi there! I'm Penny. I can help you with anything from coding and writing to answering questions about the world.</p>
-              <p className="mt-2 text-sm text-stone-text/70 italic">Cost: $0.00 (Welcome message)</p>
-            </div>
+        <div className="max-w-2xl mx-auto pt-16 md:pt-24 text-center space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-blue/10 text-sky-blue text-xs font-mono uppercase tracking-widest">
+            <span className="w-1.5 h-1.5 rounded-full bg-sky-blue" />
+            new conversation
           </div>
-          
-          {/* User Message */}
-          <div className="flex justify-end">
-            <div className="msg-user p-5 max-w-[85%] text-base leading-relaxed text-midnight">
-              <p>Can you explain what a smart contract is in simple terms?</p>
-            </div>
-          </div>
-
-          {/* Assistant Message */}
-          <div className="flex justify-start">
-            <div className="msg-assistant p-5 max-w-[85%] text-base leading-relaxed text-stone-text">
-              <p>Think of a smart contract like a digital vending machine.</p>
-              <p className="mt-3">With a regular vending machine, you put in a coin, press a button, and the machine automatically gives you a snack. You don't need a store clerk to process the transaction—the machine's internal programming guarantees that if you provide the right input (money), you get the output (snack).</p>
-              <p className="mt-3">A smart contract does the same thing on a blockchain. It's a piece of computer code that automatically executes actions when certain conditions are met, without needing a middleman like a bank or lawyer.</p>
-              <div className="mt-3 pt-3 border-t border-stone-border/50 text-xs font-mono text-stone-text flex justify-between">
-                <span>Debit: $0.02 cUSD</span>
-                <span>Tokens: 384</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Loading State */}
-          <div className="flex justify-start">
-            <div className="msg-assistant p-5 max-w-[85%] flex items-center h-[60px]">
-              <div className="blob-loader flex gap-2">
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
-            </div>
-          </div>
-          
+          <h1 className="font-display font-bold text-3xl md:text-4xl text-midnight tracking-tight">
+            Pay only when it answers.
+          </h1>
+          <p className="text-stone-text text-base md:text-lg leading-relaxed">
+            Top up cUSD once, send a message, the relay debits the going rate for the active tier
+            and ships the response. Every charge is settled on-chain and refundable inside a 24-hour
+            dispute window.
+          </p>
+          <ul className="inline-block text-left text-sm text-stone-text space-y-1.5 font-mono">
+            <li>· <span className="text-midnight">Haiku 4.5</span> — $0.001 / message</li>
+            <li>· <span className="text-midnight">Sonnet 4.6</span> — $0.005 / message</li>
+            <li>· <span className="text-midnight">Opus 4.7</span> — $0.020 / message</li>
+          </ul>
+          <p className="text-xs text-stone-text/70 font-mono">
+            Relay is offline in v1 — the composer queues your draft locally so the UI is exercised.
+            On-chain billing flips on once the relay key is provisioned.
+          </p>
         </div>
       </div>
 
