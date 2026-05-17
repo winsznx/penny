@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MilestonePanel } from "@/components/MilestonePanel";
 import { TapButton } from "@/components/TapButton";
+import { TopupHistory } from "@/components/TopupHistory";
 
 export default function Home() {
   return (
@@ -75,9 +76,19 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 pt-2 pb-16 max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-4">
+      <section className="px-6 pt-2 pb-8 max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-4">
         <TapButton />
         <MilestonePanel />
+      </section>
+
+      <section className="px-6 pb-16 max-w-6xl mx-auto w-full">
+        <div className="feature-card">
+          <h3 className="font-display font-bold text-xl text-midnight mb-1">Your activity</h3>
+          <p className="text-sm text-stone-text mb-4">
+            Recent top-ups and withdrawals on the connected wallet.
+          </p>
+          <TopupHistory />
+        </div>
       </section>
     </main>
   );
