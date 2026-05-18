@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BalancePill } from "@/components/BalancePill";
 import { ChatComposer } from "@/components/ChatComposer";
 import { ConnectButton } from "@/components/ConnectButton";
+import { TierBreakdown } from "@/components/TierBreakdown";
 import { TopUpButton } from "@/components/TopUpButton";
 
 export default function Chat() {
@@ -44,11 +45,13 @@ export default function Chat() {
             and ships the response. Every charge is settled on-chain and refundable inside a 24-hour
             dispute window.
           </p>
-          <ul className="inline-block text-left text-sm text-stone-text space-y-1.5 font-mono">
-            <li>· <span className="text-midnight">Haiku 4.5</span> — $0.001 / message</li>
-            <li>· <span className="text-midnight">Sonnet 4.6</span> — $0.005 / message</li>
-            <li>· <span className="text-midnight">Opus 4.7</span> — $0.020 / message</li>
-          </ul>
+          <div className="text-left">
+            <TierBreakdown />
+            <p className="mt-3 text-xs text-stone-text font-mono">
+              ↑ pulled from the tier registry on chain — admin-updated, paused tiers grey out
+              automatically.
+            </p>
+          </div>
           <p className="text-xs text-stone-text/70 font-mono">
             Relay is offline in v1 — the composer queues your draft locally so the UI is exercised.
             On-chain billing flips on once the relay key is provisioned.
