@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LockRatePanel } from "@/components/LockRatePanel";
 import { MilestonePanel } from "@/components/MilestonePanel";
 import { TapButton } from "@/components/TapButton";
 import { TopupHistory } from "@/components/TopupHistory";
@@ -79,6 +80,10 @@ export default function Home() {
       <section className="px-6 pt-2 pb-8 max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-4">
         <TapButton />
         <MilestonePanel />
+      </section>
+
+      <section className="px-6 pb-8 max-w-6xl mx-auto w-full">
+        <LockRatePanel />
       </section>
 
       <section className="px-6 pb-16 max-w-6xl mx-auto w-full">
