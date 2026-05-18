@@ -4,6 +4,7 @@ import { ChatComposer } from "@/components/ChatComposer";
 import { ConnectButton } from "@/components/ConnectButton";
 import { TierBreakdown } from "@/components/TierBreakdown";
 import { TopUpButton } from "@/components/TopUpButton";
+import { WithdrawBalanceButton } from "@/components/WithdrawBalanceButton";
 
 export default function Chat() {
   return (
@@ -56,6 +57,10 @@ export default function Chat() {
             Relay is offline in v1 — the composer queues your draft locally so the UI is exercised.
             On-chain billing flips on once the relay key is provisioned.
           </p>
+
+          <div className="pt-4">
+            <WithdrawBalanceButton />
+          </div>
         </div>
       </div>
 
