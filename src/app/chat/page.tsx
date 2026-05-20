@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BalancePill } from "@/components/BalancePill";
 import { ChatComposer } from "@/components/ChatComposer";
 import { ConnectButton } from "@/components/ConnectButton";
+import { GiftCreditButton } from "@/components/GiftCreditButton";
 import { TierBreakdown } from "@/components/TierBreakdown";
 import { TopUpButton } from "@/components/TopUpButton";
 import { WithdrawBalanceButton } from "@/components/WithdrawBalanceButton";
@@ -58,8 +59,9 @@ export default function Chat() {
             On-chain billing flips on once the relay key is provisioned.
           </p>
 
-          <div className="pt-4">
+          <div className="pt-4 grid sm:grid-cols-2 gap-3">
             <WithdrawBalanceButton />
+            <GiftCreditButton />
           </div>
         </div>
       </div>
