@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BalancePill } from "@/components/BalancePill";
 import { ChatComposer } from "@/components/ChatComposer";
 import { ConnectButton } from "@/components/ConnectButton";
+import { DisputeMessagePanel } from "@/components/DisputeMessagePanel";
 import { GiftCreditButton } from "@/components/GiftCreditButton";
 import { TierBreakdown } from "@/components/TierBreakdown";
 import { TopUpButton } from "@/components/TopUpButton";
@@ -62,6 +63,10 @@ export default function Chat() {
           <div className="pt-4 grid sm:grid-cols-2 gap-3">
             <WithdrawBalanceButton />
             <GiftCreditButton />
+          </div>
+
+          <div className="pt-3">
+            <DisputeMessagePanel />
           </div>
         </div>
       </div>
