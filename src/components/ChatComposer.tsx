@@ -1,21 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { formatUnits } from "viem";
-import { useAccount, useReadContract } from "wagmi";
+import { formatUnits, keccak256, stringToHex } from "viem";
+import {
+  useAccount,
+  useReadContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import { pennyAbi } from "@/lib/abi/penny";
 import { HAIKU_TIER, PENNY_ADDRESS, isPennyDeployed } from "@/lib/wagmi";
 
-type SendState = "idle" | "blocked-noconn" | "blocked-nofunds" | "queued";
+type SendState = "idle" | "blocked-noconn" | "blocked-nofunds" | "signing" | "mining" | "sent";
 
 /**
- * Billing-gated message composer.
- *
- * Reads the user's account balance and the active tier's base cost so the user
- * can see what the next message will debit before they hit Send. The on-chain
- * debit itself happens later via the relay (Penny.registerMessage + confirmBatch
- * are scorer-permissioned). For v1 the Send action just queues the message
- * locally — we surface the gating clearly so there's no surprise debit.
+ * Billing-gated message composer. Send calls selfRegisterMessage so the on-chain
+ * debit happens at the moment the user hits Send — no relay required. The
+ * 24h dispute window still applies if a message wasn't actually delivered.
  */
 export function ChatComposer() {
   const { address, isConnected } = useAccount();
@@ -40,24 +41,42 @@ export function ChatComposer() {
 
   const rateBn = typeof rate === "bigint" ? rate : 0n;
   const balanceBn = account?.balance ?? 0n;
-  const credits = Number(account?.messageCount ?? 0n); // placeholder display only
 
   const costStr = `~$${Number(formatUnits(rateBn, 18)).toFixed(4)}`;
   const hasFunds = balanceBn >= rateBn && rateBn > 0n;
+
+  const { writeContract, data: hash, isPending } = useWriteContract();
+  const { isLoading: mining, isSuccess: confirmed } = useWaitForTransactionReceipt({ hash });
 
   function send() {
     if (!isConnected) {
       setState("blocked-noconn");
       return;
     }
-    if (isPennyDeployed && !hasFunds) {
+    if (!isPennyDeployed) {
       setState("blocked-nofunds");
       return;
     }
-    // No LLM relay wired yet — queue the message locally and clear the input.
-    setState("queued");
+    if (!hasFunds) {
+      setState("blocked-nofunds");
+      return;
+    }
+    setState("signing");
+    const msgHash = keccak256(stringToHex(`${address}:${Date.now()}:${draft}`));
+    writeContract({
+      abi: pennyAbi,
+      address: PENNY_ADDRESS,
+      functionName: "selfRegisterMessage",
+      args: [msgHash, HAIKU_TIER, rateBn],
+    });
+  }
+
+  if (confirmed && state !== "sent") {
+    setState("sent");
     setDraft("");
     setTimeout(() => setState("idle"), 2400);
+  } else if (mining && state !== "mining") {
+    setState("mining");
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -100,7 +119,7 @@ export function ChatComposer() {
           <button
             type="button"
             onClick={send}
-            disabled={!draft.trim()}
+            disabled={!draft.trim() || isPending || mining}
             className="bg-sky-blue hover:bg-sky-blue/90 text-white rounded-lg p-3 m-1 transition-colors shadow-sm flex items-center justify-center self-end disabled:opacity-40"
             aria-label="Send message"
           >
@@ -128,12 +147,6 @@ export function ChatComposer() {
               <span className="text-midnight font-medium">
                 ${Number(formatUnits(balanceBn, 18)).toFixed(2)}
               </span>
-              {credits > 0 && (
-                <>
-                  {" "}
-                  · Sent: <span className="text-midnight font-medium">{credits}</span>
-                </>
-              )}
             </span>
           )}
         </div>
@@ -146,9 +159,15 @@ export function ChatComposer() {
             Top up your balance — message cost {costStr}.
           </p>
         )}
-        {state === "queued" && (
+        {state === "signing" && (
+          <p className="mt-2 text-xs text-stone-text">Waiting for wallet signature…</p>
+        )}
+        {state === "mining" && (
+          <p className="mt-2 text-xs text-stone-text">Mining your debit…</p>
+        )}
+        {state === "sent" && (
           <p className="mt-2 text-xs text-emerald-600">
-            Queued. Relay integration ships next — your wallet won&apos;t be debited yet.
+            Debited {costStr}. 24h dispute window open.
           </p>
         )}
       </div>
