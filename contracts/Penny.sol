@@ -222,13 +222,26 @@ contract Penny is ERC721, Ownable, Pausable, ReentrancyGuard {
     // ━━━ relay billing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     /// @notice Relay registers a pending message after the upstream LLM call returns.
-    ///         Cost is locked from the user's balance immediately.
     function registerMessage(address user, bytes32 msgHash, bytes32 modelId, uint256 reportedCost)
         external
         onlyRelay
         whenNotPaused
     {
         require(user != address(0), "Penny: zero user");
+        _registerMessage(user, msgHash, modelId, reportedCost);
+    }
+
+    /// @notice User self-bills without the relay path. Always charges msg.sender.
+    function selfRegisterMessage(bytes32 msgHash, bytes32 modelId, uint256 reportedCost)
+        external
+        whenNotPaused
+    {
+        _registerMessage(msg.sender, msgHash, modelId, reportedCost);
+    }
+
+    function _registerMessage(address user, bytes32 msgHash, bytes32 modelId, uint256 reportedCost)
+        private
+    {
         if (pendingMessages[msgHash].user != address(0)) revert PennyAlreadyRegistered();
 
         Tier memory t = tiers[tierIdOf[modelId]];

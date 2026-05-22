@@ -159,6 +159,28 @@ contract PennyTest is Test {
         vm.stopPrank();
     }
 
+    function test_selfRegisterMessage_charges_msgSender() public {
+        vm.prank(userA);
+        p.topUp(1 ether);
+        bytes32 h = keccak256("self-1");
+        vm.prank(userA);
+        p.selfRegisterMessage(h, HAIKU, HAIKU_RATE);
+        assertEq(p.balanceOfAccount(userA), 1 ether - HAIKU_RATE);
+        (address u, , , , , , ) = p.pendingMessages(h);
+        assertEq(u, userA);
+    }
+
+    function test_selfRegisterMessage_anyoneCallsForSelfOnly() public {
+        vm.prank(userA);
+        p.topUp(1 ether);
+        // userB cannot self-register a message that would debit userA — selfRegister
+        // always uses msg.sender, so userB ends up trying to debit their own (empty) balance.
+        bytes32 h = keccak256("self-2");
+        vm.prank(userB);
+        vm.expectRevert(Penny.PennyInsufficientBalance.selector);
+        p.selfRegisterMessage(h, HAIKU, HAIKU_RATE);
+    }
+
     function test_confirmBatch_settles_pending_messages_to_treasury() public {
         vm.prank(userA);
         p.topUp(1 ether);
