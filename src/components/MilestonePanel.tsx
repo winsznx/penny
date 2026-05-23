@@ -34,7 +34,7 @@ export function MilestonePanel() {
           settled: <span className="text-midnight font-medium">{messageCount.toString()}</span>
         </span>
       </div>
-      <ul className="grid grid-cols-4 gap-3">
+      <ul className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
         {THRESHOLDS.map((t) => (
           <MilestoneCell key={t.toString()} threshold={t} reached={messageCount >= t} />
         ))}
