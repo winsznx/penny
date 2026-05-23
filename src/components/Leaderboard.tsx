@@ -1,9 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
-import { useChainId, useConfig } from "wagmi";
+import { useConfig } from "wagmi";
 import { getPublicClient } from "wagmi/actions";
 import { useQuery } from "@tanstack/react-query";
+import { celo } from "wagmi/chains";
 import { pennyAbi } from "@/lib/abi/penny";
 import { PENNY_ADDRESS, isPennyDeployed } from "@/lib/wagmi";
 import { fetchActorAggregates, formatCusd, shortAddr, type ActorEvent } from "@/lib/leaderboard";
@@ -23,13 +24,12 @@ const ACTOR_EVENTS: ActorEvent[] = [
 const PAGE_SIZE = 25;
 
 export function Leaderboard() {
-  const chainId = useChainId();
   const config = useConfig();
 
   const query = useQuery({
-    queryKey: ["penny-leaderboard", chainId, PENNY_ADDRESS],
+    queryKey: ["penny-leaderboard", celo.id, PENNY_ADDRESS],
     queryFn: async () => {
-      const client = getPublicClient(config, { chainId });
+      const client = getPublicClient(config, { chainId: celo.id });
       if (!client) return [];
       return fetchActorAggregates({
         client,
