@@ -6,34 +6,38 @@ import { TopupHistory } from "@/components/TopupHistory";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-warm-stone text-midnight font-body flex flex-col">
+    <main className="min-h-screen bg-warm-stone text-midnight font-body flex flex-col overflow-x-clip">
       {/* Navigation */}
-      <header className="px-6 py-4 flex justify-between items-center max-w-6xl w-full mx-auto">
-        <div className="font-display font-bold text-2xl tracking-tight">Penny</div>
-        <div className="flex items-center gap-6">
-          <div className="bg-stone-surface px-4 py-2 rounded-full font-mono text-sm text-stone-text border border-stone-border">
-            Balance: <span className="text-midnight font-bold">$0.00</span>
+      <header className="px-5 sm:px-6 py-4 flex justify-between items-center gap-3 max-w-6xl w-full mx-auto">
+        <Link href="/" className="font-display font-bold text-xl sm:text-2xl tracking-tight">Penny</Link>
+        <nav className="hidden md:flex items-center gap-8 text-sm font-mono text-stone-text uppercase tracking-widest">
+          <Link href="/chat" className="hover:text-midnight transition-colors">Chat</Link>
+          <Link href="/leaderboard" className="hover:text-midnight transition-colors">Leaderboard</Link>
+        </nav>
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="hidden sm:flex items-center bg-stone-surface px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-mono text-xs sm:text-sm text-stone-text border border-stone-border whitespace-nowrap">
+            Balance: <span className="text-midnight font-bold ml-1">$0.00</span>
           </div>
-          <Link href="#top-up" className="nav-link-orange text-sm">
-            Top up balance →
+          <Link href="/chat" className="nav-link-orange text-xs sm:text-sm whitespace-nowrap">
+            Start chat <span aria-hidden>→</span>
           </Link>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="flex-1 flex flex-col md:flex-row items-center justify-center max-w-6xl mx-auto px-6 py-12 gap-12">
-        <div className="flex-1 space-y-6 text-center md:text-left">
-          <h1 className="font-display font-bold text-5xl md:text-[68px] leading-[1.1] tracking-tight">
+      <section className="flex-1 flex flex-col md:flex-row items-center justify-center max-w-6xl w-full mx-auto px-5 sm:px-6 py-10 md:py-16 gap-10 md:gap-12">
+        <div className="flex-1 space-y-5 sm:space-y-6 text-center md:text-left">
+          <h1 className="font-display font-bold leading-[1.05] tracking-tight" style={{ fontSize: "clamp(34px, 9vw, 68px)" }}>
             Pay only when it <span className="text-sky-blue">answers.</span>
           </h1>
-          <p className="text-lg text-stone-text max-w-md mx-auto md:mx-0">
-            Premium AI chat without the $20 monthly subscription. Pay per message using cUSD on the Celo network. 
+          <p className="text-base sm:text-lg text-stone-text max-w-md mx-auto md:mx-0">
+            Premium AI chat without the $20 monthly subscription. Pay per message using cUSD on the Celo network.
           </p>
-          <div className="pt-4 flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
+          <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row items-center gap-3 sm:gap-4 justify-center md:justify-start">
             <Link href="/chat">
-              <button className="btn-pill-dark text-lg px-8 py-4">Start Chatting</button>
+              <button className="btn-pill-dark text-base sm:text-lg px-7 sm:px-8 py-3.5 sm:py-4">Start chatting</button>
             </Link>
-            <span className="text-sm text-stone-text font-mono bg-stone-surface px-3 py-1.5 rounded-md">
+            <span className="text-xs sm:text-sm text-stone-text font-mono bg-stone-surface px-3 py-1.5 rounded-md">
               First 3 messages free
             </span>
           </div>
