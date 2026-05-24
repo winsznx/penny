@@ -6,7 +6,7 @@ import { stringToHex } from "viem";
 const wcProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 
 export const wagmiConfig = createConfig({
-  chains: [celoAlfajores, celo],
+  chains: [celo, celoAlfajores],
   connectors: [
     injected({ shimDisconnect: true }),
     ...(wcProjectId
@@ -41,7 +41,7 @@ const ZERO = "0x0000000000000000000000000000000000000000" as const;
 
 export const PENNY_ADDRESS = (process.env.NEXT_PUBLIC_PENNY_ADDRESS ?? ZERO) as `0x${string}`;
 export const CUSD_ADDRESS = (process.env.NEXT_PUBLIC_CUSD_ADDRESS ?? ZERO) as `0x${string}`;
-export const ACTIVE_CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? celoAlfajores.id);
+export const ACTIVE_CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? celo.id);
 export const isPennyDeployed = PENNY_ADDRESS !== ZERO;
 
 // model ids match Penny.sol's tier registry seeded by the deploy script
