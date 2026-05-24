@@ -16,10 +16,10 @@ export function ConnectButton() {
       <button
         type="button"
         onClick={() => disconnect()}
-        className="px-4 py-2 rounded-full bg-stone-surface border border-stone-border font-mono text-sm text-stone-text hover:border-midnight transition-colors"
+        className="btn-secondary font-mono text-sm"
         title="Click to disconnect"
       >
-        <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-2 align-middle" />
+        <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
         {short(address)}
       </button>
     );
