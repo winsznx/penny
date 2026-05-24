@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatUnits, stringToHex } from "viem";
 import {
   useAccount,
@@ -43,6 +43,16 @@ export function DisputeMessagePanel() {
   const { address, isConnected } = useAccount();
   const [msgHash, setMsgHash] = useState("");
   const [reason, setReason] = useState<typeof REASON_CODES[number]["code"]>("hallucinated");
+  const [nowSec, setNowSec] = useState(0);
+
+  useEffect(() => {
+    const initial = window.setTimeout(() => setNowSec(Math.floor(Date.now() / 1000)), 0);
+    const id = window.setInterval(() => setNowSec(Math.floor(Date.now() / 1000)), 60_000);
+    return () => {
+      window.clearTimeout(initial);
+      window.clearInterval(id);
+    };
+  }, []);
 
   const validHash = isHex(msgHash);
 
@@ -60,7 +70,6 @@ export function DisputeMessagePanel() {
   const alreadyDisputed = tuple?.[5] ?? false;
   const cost = tuple?.[1] ?? 0n;
   const registeredAt = Number(tuple?.[2] ?? 0n);
-  const nowSec = Math.floor(Date.now() / 1000);
   const windowEnds = registeredAt + 24 * 60 * 60;
   const windowClosed = registeredAt > 0 && nowSec > windowEnds;
   const exists =
