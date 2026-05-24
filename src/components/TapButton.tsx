@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { pennyAbi } from "@/lib/abi/penny";
 import { PENNY_ADDRESS, isPennyDeployed } from "@/lib/wagmi";
@@ -13,6 +14,16 @@ const COOLDOWN_SEC = 18 * 60 * 60; // matches Penny.TAP_COOLDOWN
  */
 export function TapButton() {
   const { address, isConnected } = useAccount();
+  const [nowSec, setNowSec] = useState(0);
+
+  useEffect(() => {
+    const initial = window.setTimeout(() => setNowSec(Math.floor(Date.now() / 1000)), 0);
+    const id = window.setInterval(() => setNowSec(Math.floor(Date.now() / 1000)), 60_000);
+    return () => {
+      window.clearTimeout(initial);
+      window.clearInterval(id);
+    };
+  }, []);
 
   const { data: last } = useReadContract({
     abi: pennyAbi,
@@ -34,7 +45,6 @@ export function TapButton() {
   const { isLoading: mining, isSuccess } = useWaitForTransactionReceipt({ hash });
 
   const lastTs = typeof last === "bigint" ? Number(last) : 0;
-  const nowSec = Math.floor(Date.now() / 1000);
   const secondsLeft = lastTs === 0 ? 0 : Math.max(0, lastTs + COOLDOWN_SEC - nowSec);
   const onCooldown = secondsLeft > 0;
   const runVal = run !== undefined ? Number(run) : 0;
