@@ -10,12 +10,13 @@ import { WithdrawBalanceButton } from "@/components/WithdrawBalanceButton";
 
 export default function Chat() {
   return (
-    <main className="min-h-screen bg-warm-stone text-midnight font-body flex flex-col h-screen">
+    <main className="chat-shell text-midnight font-body flex flex-col h-screen">
       {/* Navigation / Header */}
-      <header className="px-6 py-4 flex flex-wrap justify-between items-center w-full bg-white border-b border-stone-border shrink-0 shadow-sm z-10 gap-3">
+      <header className="mx-3 mt-3 rounded-xl border border-stone-border bg-white/85 px-5 py-4 shadow-sm backdrop-blur shrink-0 z-10">
+        <div className="flex flex-wrap justify-between items-center gap-3">
         <div className="flex items-center gap-4">
-          <Link href="/" className="text-stone-text hover:text-midnight font-medium">
-            ← Back
+          <Link href="/" className="btn-secondary min-h-0 px-3 py-2">
+            Back
           </Link>
           <div className="font-display font-bold text-xl tracking-tight">Penny</div>
           <span
@@ -30,6 +31,7 @@ export default function Chat() {
           <BalancePill />
           <TopUpButton />
           <ConnectButton />
+        </div>
         </div>
       </header>
 
