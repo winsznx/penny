@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BalancePill } from "./BalancePill";
 import { ConnectButton } from "./ConnectButton";
+import { NetworkSelector } from "./NetworkSelector";
 
 export function Header({ compact = false }: { compact?: boolean }) {
   return (
@@ -24,6 +25,7 @@ export function Header({ compact = false }: { compact?: boolean }) {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
+          <NetworkSelector />
           {!compact && <div className="hidden lg:block"><BalancePill /></div>}
           <Link href="/chat" className="hidden sm:inline-flex btn-secondary">Start chat</Link>
           <ConnectButton />
