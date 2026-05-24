@@ -32,16 +32,13 @@ export function TopupHistory() {
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isConnected || !isPennyDeployed || !address) {
-      setRows(null);
-      return;
-    }
+    if (!isConnected || !isPennyDeployed || !address) return;
 
     let cancelled = false;
-    setErr(null);
 
     (async () => {
       try {
+        setErr(null);
         const client = getPublicClient(config, { chainId });
         if (!client) {
           setErr("No public client");
