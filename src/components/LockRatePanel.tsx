@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatUnits } from "viem";
 import {
   useAccount,
@@ -41,6 +41,16 @@ export function LockRatePanel() {
   const { address, isConnected } = useAccount();
   const [tierIdx, setTierIdx] = useState(0);
   const [secondsIdx, setSecondsIdx] = useState(2); // default to 24 hrs
+  const [nowSec, setNowSec] = useState(0);
+
+  useEffect(() => {
+    const initial = window.setTimeout(() => setNowSec(Math.floor(Date.now() / 1000)), 0);
+    const id = window.setInterval(() => setNowSec(Math.floor(Date.now() / 1000)), 60_000);
+    return () => {
+      window.clearTimeout(initial);
+      window.clearInterval(id);
+    };
+  }, []);
 
   const { data: account } = useReadContract({
     abi: pennyAbi,
@@ -58,7 +68,7 @@ export function LockRatePanel() {
 
   const lockedUntil = account?.rateLockUntil ?? 0n;
   const lockedRate = account?.lockedRate ?? 0n;
-  const now = BigInt(Math.floor(Date.now() / 1000));
+  const now = BigInt(nowSec);
   const lockActive = lockedUntil > now;
   const secondsRemaining = lockActive ? Number(lockedUntil - now) : 0;
 
