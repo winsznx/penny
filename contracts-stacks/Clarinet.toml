@@ -9,3 +9,18 @@ cache_dir = "./.cache"
 path = "penny.clar"
 clarity_version = 3
 epoch = 3.0
+
+[contracts.stx-faucet]
+path = "stx-faucet.clar"
+clarity_version = 3
+epoch = 3.0
+
+[contracts.penny-badges]
+path = "penny-badges.clar"
+clarity_version = 3
+epoch = 3.0
+
+[contracts.penny-referrals]
+path = "penny-referrals.clar"
+clarity_version = 3
+epoch = 3.0
