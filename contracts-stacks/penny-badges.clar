@@ -1,4 +1,4 @@
-;; penny-badges — milestone NFTs for message-volume tiers.
+;; penny-badges - milestone NFTs for message-volume tiers.
 ;; Anyone can claim once their on-chain message count crosses a threshold.
 ;; No owner gating except for setting the base URI.
 

@@ -1,5 +1,5 @@
-;; penny-referrals — anyone can register a referrer once, earns free credits
-;; for both parties. No owner gating, no whitelist — fully permissionless.
+;; penny-referrals - anyone can register a referrer once, earns free credits
+;; for both parties. No owner gating, no whitelist - fully permissionless.
 
 (define-constant ERR-SELF-REFER (err u700))
 (define-constant ERR-ALREADY-REFERRED (err u701))

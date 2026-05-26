@@ -1,8 +1,6 @@
-;; Penny — Stacks/Clarity port (draft)
+;; Penny - Stacks/Clarity port (draft)
 ;; Prepaid escrow that debits per-message based on registered tier rates.
 ;; Mirrors the Solidity Penny.sol: tier registry, topUp, selfRegisterMessage.
-
-(use-trait ft-trait .sip-010-trait.sip-010-trait)
 
 (define-constant ERR-TIER-INACTIVE (err u200))
 (define-constant ERR-NOT-RELAY (err u201))
