@@ -1,0 +1,11 @@
+[project]
+name = "penny-stacks"
+description = "Penny — pay-per-message AI escrow on Stacks"
+authors = []
+telemetry = false
+cache_dir = "./.cache"
+
+[contracts.penny]
+path = "penny.clar"
+clarity_version = 3
+epoch = 3.0
