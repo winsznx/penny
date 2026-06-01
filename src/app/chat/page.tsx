@@ -21,7 +21,7 @@ export default function Chat() {
           <div className="font-display font-bold text-xl tracking-tight">Penny</div>
           <span
             className="text-xs bg-sky-blue/10 text-sky-blue px-2 py-1 rounded font-medium ml-2"
-            title="Default tier — $0.001 cUSD per message"
+            title="Default tier — $0.001 per message (cUSD on Celo, STX-equivalent on Stacks)"
           >
             Haiku 4.5
           </span>
@@ -46,9 +46,9 @@ export default function Chat() {
             Pay only when it answers.
           </h1>
           <p className="text-stone-text text-base md:text-lg leading-relaxed">
-            Top up cUSD once, send a message, the relay debits the going rate for the active tier
-            and ships the response. Every charge is settled on-chain and refundable inside a 24-hour
-            dispute window.
+            Top up in cUSD on Celo or STX on Stacks, send a message, and the relay debits the going
+            rate for the active tier and ships the response. Every charge settles on-chain and is
+            refundable inside a 24-hour dispute window.
           </p>
           <div className="text-left">
             <TierBreakdown />

@@ -1,8 +1,8 @@
 export const SHARE_HOST = "https://penny.timjosh507.workers.dev";
 
 export function shareText(title?: string): string {
-  if (!title) return "I'm using Penny — pay-per-message AI on Celo. Try it →";
-  return `${title} — pay-per-message AI on Celo, no subscription →`;
+  if (!title) return "I'm using Penny — pay-per-message AI on Celo + Stacks. Try it →";
+  return `${title} — pay-per-message AI on Celo (cUSD) or Stacks (STX), no subscription →`;
 }
 
 export const whatsAppLink = (text: string, url: string) =>

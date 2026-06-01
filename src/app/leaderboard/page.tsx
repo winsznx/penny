@@ -5,7 +5,7 @@ import { Leaderboard } from "@/components/Leaderboard";
 
 export const metadata: Metadata = {
   title: "Leaderboard · Penny",
-  description: "Top spenders, tappers, and message senders on Penny — ranked by total on-chain actions.",
+  description: "Top spenders, tappers, and message senders on Penny — ranked by total on-chain actions on Celo and Stacks.",
 };
 
 export default function LeaderboardPage() {
@@ -23,8 +23,9 @@ export default function LeaderboardPage() {
             Top <span className="text-sky-blue">users.</span>
           </h1>
           <p className="mt-4 body-lg">
-            Ranked by total on-chain actions on the Penny contract: top-ups, registered messages,
-            taps, rate locks, milestone claims, and intros.
+            Ranked by total on-chain actions on the Penny contracts — top-ups, registered messages,
+            taps, rate locks, milestone claims, and intros. Switch the chain toggle to see Celo (cUSD)
+            or Stacks (STX) activity.
           </p>
           <Link href="/chat" className="mt-6 inline-flex btn-pill-dark">Start chat</Link>
         </div>

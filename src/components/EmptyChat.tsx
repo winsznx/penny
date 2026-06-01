@@ -4,7 +4,7 @@ const QUICK_PROMPTS = [
   "Explain how Penny escrow works",
   "What models are cheapest right now?",
   "Translate 'hello' to 5 languages",
-  "Summarise the latest celo news",
+  "Compare cUSD on Celo vs sBTC on Stacks",
 ];
 
 export function EmptyChat({ onPrompt, className = "" }: Props) {

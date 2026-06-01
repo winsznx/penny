@@ -14,14 +14,14 @@ export default function Home() {
         <div>
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-stone-border bg-white px-3 py-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-sky-blue" />
-            <span className="eyebrow">cUSD billing · no subscription</span>
+            <span className="eyebrow">Onchain billing · no subscription</span>
           </div>
           <h1 className="display-xl">
             Pay only when it <span className="text-sky-blue">answers.</span>
           </h1>
           <p className="mt-6 max-w-2xl body-lg">
-            Penny is premium AI chat without the monthly lock-in. Top up once, send messages, and
-            settle per useful answer through cUSD on Celo.
+            Penny is premium AI chat without the monthly lock-in. Top up once in cUSD on Celo or
+            STX on Stacks, send messages, and settle per useful answer.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Link href="/chat" className="btn-pill-dark text-base">Start chatting</Link>
@@ -50,7 +50,7 @@ export default function Home() {
             {[
               ["Rate", "$0.001"],
               ["Refund", "24h"],
-              ["Network", "Celo"],
+              ["Networks", "Celo · Stacks"],
             ].map(([label, value]) => (
               <div key={label} className="rounded-lg border border-stone-border bg-white p-3">
                 <div className="eyebrow">{label}</div>
