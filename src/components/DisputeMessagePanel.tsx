@@ -8,6 +8,8 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { pennyAbi } from "@/lib/abi/penny";
 import { PENNY_ADDRESS, isPennyDeployed } from "@/lib/wagmi";
 
@@ -40,10 +42,15 @@ const isHex = (v: string): v is `0x${string}` => /^0x[0-9a-fA-F]{64}$/.test(v);
  * the user only signs an actually-eligible dispute.
  */
 export function DisputeMessagePanel() {
+  const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
   const [msgHash, setMsgHash] = useState("");
   const [reason, setReason] = useState<typeof REASON_CODES[number]["code"]>("hallucinated");
   const [nowSec, setNowSec] = useState(0);
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Message disputes" />;
+  }
 
   useEffect(() => {
     const initial = window.setTimeout(() => setNowSec(Math.floor(Date.now() / 1000)), 0);

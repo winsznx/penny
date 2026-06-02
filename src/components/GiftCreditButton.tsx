@@ -8,6 +8,8 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { pennyAbi } from "@/lib/abi/penny";
 import { CUSD_ADDRESS, PENNY_ADDRESS, isPennyDeployed } from "@/lib/wagmi";
 
@@ -21,9 +23,14 @@ const GIFT_PRESETS = [1, 5, 10, 25];
  * accept — funds go to whatever address you typed).
  */
 export function GiftCreditButton() {
+  const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState<number>(5);
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Gift credit" />;
+  }
 
   const validRecipient = isAddress(recipient);
   const recipientLower = validRecipient ? (recipient.toLowerCase() as `0x${string}`) : undefined;

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { pennyAbi } from "@/lib/abi/penny";
 import { PENNY_ADDRESS, isPennyDeployed } from "@/lib/wagmi";
 
@@ -13,8 +15,13 @@ const COOLDOWN_SEC = 18 * 60 * 60; // matches Penny.TAP_COOLDOWN
  * Disables itself client-side when the cooldown is unmet (chain enforces too).
  */
 export function TapButton() {
+  const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
   const [nowSec, setNowSec] = useState(0);
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Daily tap streak" />;
+  }
 
   useEffect(() => {
     const initial = window.setTimeout(() => setNowSec(Math.floor(Date.now() / 1000)), 0);

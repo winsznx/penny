@@ -1,12 +1,12 @@
-import Link from "next/link";
 import { BalancePill } from "@/components/BalancePill";
-import { ChatComposer } from "@/components/ChatComposer";
+import { ChatComposerClient } from "@/components/ChatComposerClient";
 import { ConnectButton } from "@/components/ConnectButton";
 import { DisputeMessagePanel } from "@/components/DisputeMessagePanel";
 import { GiftCreditButton } from "@/components/GiftCreditButton";
 import { TierBreakdown } from "@/components/TierBreakdown";
 import { TopUpButton } from "@/components/TopUpButton";
 import { WithdrawBalanceButton } from "@/components/WithdrawBalanceButton";
+import Link from "next/link";
 
 export default function Chat() {
   return (
@@ -73,8 +73,8 @@ export default function Chat() {
         </div>
       </div>
 
-      {/* Input Area */}
-      <ChatComposer />
+      {/* Input Area — wraps ChatComposer with a chain-aware submit */}
+      <ChatComposerClient />
     </main>
   );
 }

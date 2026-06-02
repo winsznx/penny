@@ -8,6 +8,8 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { pennyAbi } from "@/lib/abi/penny";
 import { PENNY_ADDRESS, isPennyDeployed } from "@/lib/wagmi";
 
@@ -17,8 +19,13 @@ import { PENNY_ADDRESS, isPennyDeployed } from "@/lib/wagmi";
  * connected wallet — there's no UI path to ask for more than you have.
  */
 export function WithdrawBalanceButton() {
+  const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
   const [amount, setAmount] = useState<number | "">("");
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Withdrawals" />;
+  }
 
   const { data: balance, refetch: refetchBalance } = useReadContract({
     abi: pennyAbi,
