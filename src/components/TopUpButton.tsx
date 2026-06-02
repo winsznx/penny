@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { erc20Abi, parseUnits } from "viem";
 import {
   useAccount,
@@ -8,16 +8,27 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { readStacksSession, connectStacks } from "@/chain/stacksSession";
+import { useStacksWrite } from "@/chain/useStacksWrite";
+import {
+  PENNY_STX_CONTRACT,
+  PENNY_STX_DEPLOYER,
+  PENNY_STX_TOP_UP_FN,
+} from "@/chain/stacksContracts";
 import { pennyAbi } from "@/lib/abi/penny";
 import { CUSD_ADDRESS, PENNY_ADDRESS, isPennyDeployed } from "@/lib/wagmi";
 
-const PRESETS = [1, 5, 10, 25];
+const PRESETS_CELO = [1, 5, 10, 25];
+const PRESETS_STACKS = [1, 5, 10, 25];
 
 /**
- * Two-step top-up: cUSD ERC20 approve, then Penny.topUp(amount).
- * Reads the existing allowance and skips the approve when sufficient.
+ * Top-up entry point. On Celo this is a two-step ERC20 approve + Penny.topUp
+ * write through wagmi. On Stacks it dynamically loads @stacks/connect and
+ * fires top-up(uint) directly on the Clarity contract for the chosen amount.
  */
 export function TopUpButton() {
+  const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
   const [amount, setAmount] = useState<number>(5);
   const [phase, setPhase] = useState<"idle" | "approving" | "depositing">("idle");
@@ -29,37 +40,62 @@ export function TopUpButton() {
     address: CUSD_ADDRESS,
     functionName: "allowance",
     args: address ? [address, PENNY_ADDRESS] : undefined,
-    query: { enabled: isConnected && isPennyDeployed && !!address },
+    query: { enabled: kind === "celo" && isConnected && isPennyDeployed && !!address },
   });
 
   const { writeContract, data: hash, reset } = useWriteContract();
   const { isLoading: mining } = useWaitForTransactionReceipt({ hash });
+  const stx = useStacksWrite();
 
-  const enabled = isConnected && isPennyDeployed && !mining;
-  const needsApprove = !allowance || (allowance as bigint) < wei;
+  const [stxAddr, setStxAddr] = useState<string | null>(null);
+  useEffect(() => {
+    if (kind !== "stacks") return;
+    setStxAddr(readStacksSession().address);
+  }, [kind]);
 
-  function topUp() {
-    if (!isConnected) return;
-    if (needsApprove) {
-      setPhase("approving");
+  const presets = kind === "celo" ? PRESETS_CELO : PRESETS_STACKS;
+  const needsApprove = kind === "celo" && (!allowance || (allowance as bigint) < wei);
+
+  async function topUp() {
+    if (kind === "celo") {
+      if (!isConnected) return;
+      if (needsApprove) {
+        setPhase("approving");
+        writeContract({
+          abi: erc20Abi,
+          address: CUSD_ADDRESS,
+          functionName: "approve",
+          args: [PENNY_ADDRESS, wei],
+        });
+        return;
+      }
+      setPhase("depositing");
       writeContract({
-        abi: erc20Abi,
-        address: CUSD_ADDRESS,
-        functionName: "approve",
-        args: [PENNY_ADDRESS, wei],
+        abi: pennyAbi,
+        address: PENNY_ADDRESS,
+        functionName: "topUp",
+        args: [wei],
       });
       return;
     }
-    setPhase("depositing");
-    writeContract({
-      abi: pennyAbi,
-      address: PENNY_ADDRESS,
-      functionName: "topUp",
-      args: [wei],
+
+    // Stacks branch — ensure connected, then call top-up(uint)
+    let s = readStacksSession();
+    if (!s.isConnected) {
+      s = await connectStacks();
+      setStxAddr(s.address);
+      if (!s.isConnected) return;
+    }
+    const microStx = BigInt(amount) * 1_000_000n;
+    await stx.call({
+      contractAddress: PENNY_STX_DEPLOYER,
+      contractName: PENNY_STX_CONTRACT,
+      functionName: PENNY_STX_TOP_UP_FN,
+      args: [{ type: "uint", value: microStx }],
     });
   }
 
-  const cta = mining
+  const ctaCelo = mining
     ? phase === "approving"
       ? "Approving…"
       : "Depositing…"
@@ -67,10 +103,21 @@ export function TopUpButton() {
       ? `Approve $${amount} cUSD`
       : `Top up $${amount}`;
 
+  const ctaStacks = stx.pending
+    ? "Confirm in wallet…"
+    : stxAddr
+      ? `Top up ${amount} STX`
+      : `Connect Stacks to top up`;
+
+  const enabledCelo = isConnected && isPennyDeployed && !mining;
+  const enabledStacks = !stx.pending;
+  const enabled = kind === "celo" ? enabledCelo : enabledStacks;
+  const cta = kind === "celo" ? ctaCelo : ctaStacks;
+
   return (
     <div className="flex flex-wrap items-center gap-2">
       <div className="flex gap-1">
-        {PRESETS.map((p) => (
+        {presets.map((p) => (
           <button
             key={p}
             type="button"
@@ -81,7 +128,7 @@ export function TopUpButton() {
                 : "border-stone-border text-stone-text hover:text-midnight"
             }`}
           >
-            ${p}
+            {kind === "celo" ? `$${p}` : `${p} STX`}
           </button>
         ))}
       </div>
@@ -93,10 +140,20 @@ export function TopUpButton() {
       >
         {cta}
       </button>
-      {hash && (
-        <button type="button" onClick={() => reset()} className="text-xs text-stone-text underline">
+      {(hash || stx.txid) && (
+        <button
+          type="button"
+          onClick={() => {
+            reset();
+            stx.reset();
+          }}
+          className="text-xs text-stone-text underline"
+        >
           reset
         </button>
+      )}
+      {stx.error && (
+        <span className="text-xs text-red-600 font-mono">{stx.error}</span>
       )}
     </div>
   );

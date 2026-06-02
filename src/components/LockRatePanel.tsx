@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { formatUnits } from "viem";
 import {
   useAccount,
+  useConnect,
   useReadContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
 import { pennyAbi } from "@/lib/abi/penny";
 import {
   HAIKU_TIER,
@@ -38,7 +40,9 @@ const DURATIONS = [
  * for the connected wallet so the user can see when the lock expires.
  */
 export function LockRatePanel() {
+  const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
+  const { connect, connectors, isPending: connectPending } = useConnect();
   const [tierIdx, setTierIdx] = useState(0);
   const [secondsIdx, setSecondsIdx] = useState(2); // default to 24 hrs
   const [nowSec, setNowSec] = useState(0);
@@ -99,6 +103,13 @@ export function LockRatePanel() {
         regardless of admin tier updates.
       </p>
 
+      {kind === "stacks" && (
+        <div className="rounded-lg border border-stone-border bg-stone-surface px-4 py-3 text-xs text-stone-text">
+          Rate locks live on the Celo contract. The Stacks build of Penny tops up and settles per
+          message — switch to Celo to lock a tier.
+        </div>
+      )}
+
       <LockStatus
         active={lockActive}
         remainingSeconds={secondsRemaining}
@@ -149,29 +160,39 @@ export function LockRatePanel() {
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={submit}
-        disabled={disabled}
-        className="btn-pill-dark w-full text-sm disabled:opacity-40"
-      >
-        {mining
-          ? "Locking…"
-          : isPending
-            ? "Confirm in wallet"
-            : lockActive
-              ? "Replace current lock"
-              : `Lock ${TIERS[tierIdx].label} for ${DURATIONS[secondsIdx].label}`}
-      </button>
+      {!isConnected ? (
+        <button
+          type="button"
+          onClick={() => {
+            const first = connectors[0];
+            if (first) connect({ connector: first });
+          }}
+          disabled={connectPending || connectors.length === 0}
+          className="btn-pill-dark w-full text-sm disabled:opacity-40"
+        >
+          {connectPending ? "Opening wallet…" : "Connect wallet to lock rate"}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={submit}
+          disabled={disabled}
+          className="btn-pill-dark w-full text-sm disabled:opacity-40"
+        >
+          {mining
+            ? "Locking…"
+            : isPending
+              ? "Confirm in wallet"
+              : lockActive
+                ? "Replace current lock"
+                : `Lock ${TIERS[tierIdx].label} for ${DURATIONS[secondsIdx].label}`}
+        </button>
+      )}
 
       {hash && (
         <button type="button" onClick={() => reset()} className="text-xs text-stone-text underline">
           reset
         </button>
-      )}
-
-      {!isConnected && (
-        <p className="text-[12px] text-stone-text">Connect a wallet to lock a rate.</p>
       )}
       {isConnected && !isPennyDeployed && (
         <p className="text-[12px] text-amber-700">
