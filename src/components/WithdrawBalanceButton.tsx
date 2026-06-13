@@ -23,9 +23,6 @@ export function WithdrawBalanceButton() {
   const { address, isConnected } = useAccount();
   const [amount, setAmount] = useState<number | "">("");
 
-  if (kind === "stacks") {
-    return <CeloOnlyNotice feature="Withdrawals" />;
-  }
 
   const { data: balance, refetch: refetchBalance } = useReadContract({
     abi: pennyAbi,
@@ -58,6 +55,10 @@ export function WithdrawBalanceButton() {
   // refresh on confirm so the balance pill catches up
   if (confirmed && balanceBn > 0n && hash) {
     void refetchBalance();
+  }
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Withdrawals" />;
   }
 
   return (
