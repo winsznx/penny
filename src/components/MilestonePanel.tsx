@@ -1,6 +1,8 @@
 "use client";
 
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { pennyAbi } from "@/lib/abi/penny";
 import { PENNY_ADDRESS, isPennyDeployed } from "@/lib/wagmi";
 
@@ -14,6 +16,7 @@ const THRESHOLDS: bigint[] = [10n, 100n, 1_000n, 10_000n];
  * mint per milestone via `claimMilestone(threshold)`.
  */
 export function MilestonePanel() {
+  const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
 
   const { data: account } = useReadContract({
@@ -21,10 +24,17 @@ export function MilestonePanel() {
     address: PENNY_ADDRESS,
     functionName: "getAccount",
     args: address ? [address] : undefined,
-    query: { enabled: isConnected && isPennyDeployed && !!address, refetchInterval: 30_000 },
+    query: {
+      enabled: kind === "celo" && isConnected && isPennyDeployed && !!address,
+      refetchInterval: 30_000,
+    },
   });
 
   const messageCount = account?.messageCount ?? 0n;
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Message milestones" />;
+  }
 
   return (
     <div className="feature-card">
@@ -48,6 +58,7 @@ export function MilestonePanel() {
 }
 
 function MilestoneCell({ threshold, reached }: { threshold: bigint; reached: boolean }) {
+  const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
 
   const { data: claimed, refetch } = useReadContract({
@@ -55,7 +66,10 @@ function MilestoneCell({ threshold, reached }: { threshold: bigint; reached: boo
     address: PENNY_ADDRESS,
     functionName: "claimedMilestone",
     args: address ? [address, threshold] : undefined,
-    query: { enabled: isConnected && isPennyDeployed && !!address, refetchInterval: 60_000 },
+    query: {
+      enabled: kind === "celo" && isConnected && isPennyDeployed && !!address,
+      refetchInterval: 60_000,
+    },
   });
 
   const { writeContract, isPending, data: hash } = useWriteContract();
