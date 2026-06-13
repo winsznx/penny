@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatUnits, parseUnits } from "viem";
 import {
   useAccount,
@@ -52,10 +52,14 @@ export function WithdrawBalanceButton() {
     });
   }
 
-  // refresh on confirm so the balance pill catches up
-  if (confirmed && balanceBn > 0n && hash) {
-    void refetchBalance();
-  }
+  // Refresh on confirm so the balance pill catches up. Refetching during
+  // render fires every paint and creates an infinite loop — gate it through
+  // an effect that runs once per receipt confirmation.
+  useEffect(() => {
+    if (confirmed && hash) {
+      void refetchBalance();
+    }
+  }, [confirmed, hash, refetchBalance]);
 
   if (kind === "stacks") {
     return <CeloOnlyNotice feature="Withdrawals" />;
