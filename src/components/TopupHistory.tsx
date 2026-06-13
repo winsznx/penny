@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { formatUnits } from "viem";
 import { useAccount, useChainId, useConfig } from "wagmi";
 import { getPublicClient } from "wagmi/actions";
+import { useChainKind } from "@/chain/ChainProvider";
+import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { pennyAbi } from "@/lib/abi/penny";
 import { PENNY_ADDRESS, isPennyDeployed } from "@/lib/wagmi";
 
@@ -25,6 +27,7 @@ const LOOKBACK_BLOCKS = 50_000n;
  * grows.
  */
 export function TopupHistory() {
+  const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const config = useConfig();
@@ -32,6 +35,7 @@ export function TopupHistory() {
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
+    if (kind !== "celo") return;
     if (!isConnected || !isPennyDeployed || !address) return;
 
     let cancelled = false;
@@ -95,8 +99,11 @@ export function TopupHistory() {
     return () => {
       cancelled = true;
     };
-  }, [isConnected, address, chainId, config]);
+  }, [kind, isConnected, address, chainId, config]);
 
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Top-up + withdraw history" />;
+  }
   if (!isPennyDeployed) {
     return (
       <p className="text-sm text-stone-text">Penny contract not configured yet.</p>
