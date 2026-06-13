@@ -28,9 +28,6 @@ export function GiftCreditButton() {
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState<number>(5);
 
-  if (kind === "stacks") {
-    return <CeloOnlyNotice feature="Gift credit" />;
-  }
 
   const validRecipient = isAddress(recipient);
   const recipientLower = validRecipient ? (recipient.toLowerCase() as `0x${string}`) : undefined;
@@ -86,6 +83,10 @@ export function GiftCreditButton() {
     if (needsApprove) return `Approve $${amount} cUSD`;
     return `Gift $${amount} →`;
   })();
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Gift credit" />;
+  }
 
   return (
     <div className="rounded-xl border border-stone-border bg-white p-4 shadow-sm space-y-3">
