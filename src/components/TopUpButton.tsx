@@ -87,11 +87,19 @@ export function TopUpButton() {
       if (!s.isConnected) return;
     }
     const microStx = BigInt(amount) * 1_000_000n;
+    const stxAddrLocal = s.address;
     await stx.call({
       contractAddress: PENNY_STX_DEPLOYER,
       contractName: PENNY_STX_CONTRACT,
       functionName: PENNY_STX_TOP_UP_FN,
       args: [{ type: "uint", value: microStx }],
+      // Sign with deny + an explicit STX post-condition so the wallet
+      // refuses the tx if the contract tries to debit more than the user
+      // chose. Without this, the wallet would silently sign any amount.
+      postConditionMode: "deny",
+      postConditions: stxAddrLocal
+        ? [{ type: "stx-eq", from: stxAddrLocal, microStx }]
+        : undefined,
     });
   }
 
