@@ -9,7 +9,7 @@ export function NetworkSelector() {
   const { kind, setKind } = useChainKind();
   return (
     <div
-      className="hidden items-center rounded-full bg-stone-surface p-1 md:flex"
+      className="flex items-center rounded-full bg-stone-surface p-1"
       role="group"
       aria-label="Network selector"
     >
