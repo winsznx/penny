@@ -15,13 +15,11 @@ const COOLDOWN_SEC = 18 * 60 * 60; // matches Penny.TAP_COOLDOWN
  * Disables itself client-side when the cooldown is unmet (chain enforces too).
  */
 export function TapButton() {
+  // Hooks-first: every hook must run on both chain branches so the order
+  // stays stable across chain toggle. The Stacks gate is rendered AFTER.
   const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
   const [nowSec, setNowSec] = useState(0);
-
-  if (kind === "stacks") {
-    return <CeloOnlyNotice feature="Daily tap streak" />;
-  }
 
   useEffect(() => {
     const initial = window.setTimeout(() => setNowSec(Math.floor(Date.now() / 1000)), 0);
@@ -80,6 +78,10 @@ export function TapButton() {
             : !isPennyDeployed
               ? "Contract offline"
               : "Tap for credits";
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Daily tap streak" />;
+  }
 
   return (
     <div className="feature-card flex items-center justify-between gap-4">
