@@ -62,7 +62,7 @@ export function LockRatePanel() {
     functionName: "getAccount",
     args: address ? [address] : undefined,
     query: {
-      enabled: isConnected && isPennyDeployed && !!address,
+      enabled: kind === "celo" && isConnected && isPennyDeployed && !!address,
       refetchInterval: 30_000,
     },
   });
