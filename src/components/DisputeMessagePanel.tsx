@@ -42,15 +42,13 @@ const isHex = (v: string): v is `0x${string}` => /^0x[0-9a-fA-F]{64}$/.test(v);
  * the user only signs an actually-eligible dispute.
  */
 export function DisputeMessagePanel() {
+  // Hooks-first: every hook must run on both chain branches so the order
+  // stays stable across chain toggle. The Stacks gate is rendered AFTER.
   const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
   const [msgHash, setMsgHash] = useState("");
   const [reason, setReason] = useState<typeof REASON_CODES[number]["code"]>("hallucinated");
   const [nowSec, setNowSec] = useState(0);
-
-  if (kind === "stacks") {
-    return <CeloOnlyNotice feature="Message disputes" />;
-  }
 
   useEffect(() => {
     const initial = window.setTimeout(() => setNowSec(Math.floor(Date.now() / 1000)), 0);
@@ -123,6 +121,10 @@ export function DisputeMessagePanel() {
   })();
 
   const costStr = cost > 0n ? Number(formatUnits(cost, 18)).toFixed(4) : "—";
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Message disputes" />;
+  }
 
   return (
     <div className="rounded-xl border border-stone-border bg-white p-4 shadow-sm space-y-3">
