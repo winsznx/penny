@@ -2,19 +2,25 @@
 
 import { useMemo } from "react";
 import { useAccount, useReadContract } from "wagmi";
-import { stringToHex, keccak256 } from "viem";
 import { pennyAbi } from "@/lib/abi/penny";
-import { PENNY_ADDRESS, isPennyDeployed } from "@/lib/wagmi";
+import {
+  HAIKU_TIER,
+  OPUS_TIER,
+  PENNY_ADDRESS,
+  SONNET_TIER,
+  isPennyDeployed,
+} from "@/lib/wagmi";
 import { formatCusd } from "@/lib/cusd";
 
-const HAIKU = keccak256(stringToHex("haiku-4-5"));
-const SONNET = keccak256(stringToHex("sonnet-4-6"));
-const OPUS = keccak256(stringToHex("opus-4-7"));
-
+// Reuse the canonical tier ids from wagmi.ts (padded-ASCII bytes32 matching
+// the deploy script's seeded registry). Previously this file kept its own
+// keccak256("haiku-4-5") form which doesn't match what the contract was
+// registered with — `effectiveRate` for those ids returned PennyTierUnknown
+// and the cost hints rendered "…" forever.
 const PRESETS = [
-  { id: HAIKU, label: "Haiku" },
-  { id: SONNET, label: "Sonnet" },
-  { id: OPUS, label: "Opus" },
+  { id: HAIKU_TIER, label: "Haiku" },
+  { id: SONNET_TIER, label: "Sonnet" },
+  { id: OPUS_TIER, label: "Opus" },
 ] as const;
 
 /**
@@ -29,21 +35,21 @@ export function MessageCostHint() {
     abi: pennyAbi,
     address: PENNY_ADDRESS,
     functionName: "effectiveRate",
-    args: address ? [address, HAIKU] : undefined,
+    args: address ? [address, HAIKU_TIER] : undefined,
     query: { enabled },
   });
   const sonnet = useReadContract({
     abi: pennyAbi,
     address: PENNY_ADDRESS,
     functionName: "effectiveRate",
-    args: address ? [address, SONNET] : undefined,
+    args: address ? [address, SONNET_TIER] : undefined,
     query: { enabled },
   });
   const opus = useReadContract({
     abi: pennyAbi,
     address: PENNY_ADDRESS,
     functionName: "effectiveRate",
-    args: address ? [address, OPUS] : undefined,
+    args: address ? [address, OPUS_TIER] : undefined,
     query: { enabled },
   });
 
