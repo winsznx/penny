@@ -58,8 +58,8 @@ export default function Chat() {
             </p>
           </div>
           <p className="text-xs text-stone-text/70 font-mono">
-            Relay is offline in v1 — the composer queues your draft locally so the UI is exercised.
-            On-chain billing flips on once the relay key is provisioned.
+            v1 is self-debit only — your wallet signs the on-chain debit directly for each message.
+            The relay-signed path (where a model server submits the debit on your behalf) ships next.
           </p>
 
           <div className="pt-4 grid sm:grid-cols-2 gap-3">
