@@ -26,7 +26,7 @@ export default function Home() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Link href="/chat" className="btn-pill-dark text-base">Start chatting</Link>
             <span className="rounded-full bg-white px-4 py-2 font-mono text-sm text-stone-text shadow-sm">
-              First 3 messages free
+              Pay per useful answer
             </span>
           </div>
         </div>
