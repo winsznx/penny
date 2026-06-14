@@ -86,13 +86,18 @@ export function ChatComposerClient() {
           return;
         }
       }
+      // Clarity penny.self-register-message expects
+      //   (msg-hash buff32) (model-id buff32) (reported-cost uint)
+      // Passing 2 args (the previous shape) is rejected by the wallet on
+      // arity. reportedCost is 0 — same shape as the Celo branch above.
       await stx.call({
         contractAddress: PENNY_STX_DEPLOYER,
         contractName: PENNY_STX_CONTRACT,
         functionName: PENNY_STX_SELF_REGISTER_FN,
         args: [
           { type: "buff", value: msgHash },
-          { type: "uint", value: BigInt(HAIKU_TIER) },
+          { type: "buff", value: HAIKU_TIER },
+          { type: "uint", value: 0n },
         ],
       });
     } finally {
