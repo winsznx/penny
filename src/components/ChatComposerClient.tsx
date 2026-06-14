@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { keccak256, toBytes } from "viem";
 import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { useChainKind } from "@/chain/ChainProvider";
@@ -120,6 +120,17 @@ export function ChatComposerClient() {
       : stx.error);
 
   const txid = kind === "celo" ? hash : stx.txid;
+  const [copied, setCopied] = useState(false);
+  const copyHash = useCallback(async () => {
+    if (!lastMsgHash) return;
+    try {
+      await navigator.clipboard.writeText(lastMsgHash);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* clipboard may be denied in iframes — fall through silently */
+    }
+  }, [lastMsgHash]);
 
   return (
     <div className="space-y-2">
@@ -133,9 +144,17 @@ export function ChatComposerClient() {
             </p>
           )}
           {lastMsgHash && !errorMessage && (
-            <p className="text-stone-text/70">
-              msg hash <span className="text-midnight">{lastMsgHash.slice(0, 12)}…</span>{" "}
-              (paste in Dispute panel if needed)
+            <p className="text-stone-text/70 flex items-center gap-2 flex-wrap">
+              msg hash <span className="text-midnight">{lastMsgHash.slice(0, 12)}…</span>
+              <button
+                type="button"
+                onClick={copyHash}
+                className="underline hover:text-midnight"
+                title="Copy full message hash"
+              >
+                {copied ? "copied" : "copy full hash"}
+              </button>
+              <span>(paste in Dispute panel if needed)</span>
             </p>
           )}
         </div>
