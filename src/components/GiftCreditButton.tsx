@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { erc20Abi, isAddress, parseUnits } from "viem";
 import {
   useAccount,
@@ -35,7 +35,7 @@ export function GiftCreditButton() {
 
   const wei = parseUnits(amount.toString(), 18);
 
-  const { data: allowance } = useReadContract({
+  const { data: allowance, refetch: refetchAllowance } = useReadContract({
     abi: erc20Abi,
     address: CUSD_ADDRESS,
     functionName: "allowance",
@@ -46,7 +46,18 @@ export function GiftCreditButton() {
   const needsApprove = !allowance || (allowance as bigint) < wei;
 
   const { writeContract, data: hash, isPending, reset } = useWriteContract();
-  const { isLoading: mining, isSuccess: confirmed } = useWaitForTransactionReceipt({ hash });
+  const { isLoading: mining, isSuccess: confirmed } = useWaitForTransactionReceipt({
+    hash,
+    query: { enabled: !!hash },
+  });
+
+  // Refetch allowance after any receipt confirms so the post-approve click
+  // runs topUpFor instead of sending a second approve.
+  useEffect(() => {
+    if (confirmed && hash) {
+      void refetchAllowance();
+    }
+  }, [confirmed, hash, refetchAllowance]);
 
   function submit() {
     if (!isConnected || !validRecipient || isSelf || amount <= 0) return;
