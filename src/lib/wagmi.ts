@@ -4,6 +4,7 @@ import { injected, walletConnect } from "wagmi/connectors";
 import { stringToHex } from "viem";
 
 const wcProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://penny.timjosh507.workers.dev";
 
 export const wagmiConfig = createConfig({
   chains: [celo, celoAlfajores],
@@ -16,7 +17,7 @@ export const wagmiConfig = createConfig({
             metadata: {
               name: "Penny",
               description: "Pay only when it answers.",
-              url: "https://penny.timjosh507.workers.dev",
+              url: siteUrl,
               icons: [],
             },
             showQrModal: true,
