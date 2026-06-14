@@ -10,7 +10,7 @@ import Link from "next/link";
 
 export default function Chat() {
   return (
-    <main className="chat-shell text-midnight font-body flex flex-col h-screen">
+    <main className="chat-shell text-midnight font-body flex flex-col h-screen min-h-screen min-h-[100svh] min-h-[100dvh]">
       {/* Navigation / Header */}
       <header className="mx-3 mt-3 rounded-xl border border-stone-border bg-white/85 px-5 py-4 shadow-sm backdrop-blur shrink-0 z-10">
         <div className="flex flex-wrap justify-between items-center gap-3">

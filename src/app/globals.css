@@ -211,7 +211,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .chat-shell {
+  /* Use dvh so the iOS Safari address bar / keyboard doesn't cut off the
+     composer when the dynamic viewport shrinks; fall back to 100svh and
+     finally 100vh for older browsers. */
   min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(247, 243, 236, 0)),
     var(--color-warm-stone);
