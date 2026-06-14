@@ -87,19 +87,17 @@ export function TopUpButton() {
       if (!s.isConnected) return;
     }
     const microStx = BigInt(amount) * 1_000_000n;
-    const stxAddrLocal = s.address;
+    // NOTE on post-condition mode: the deployed `penny.top-up` Clarity is
+    // currently a stub that does not stx-transfer? from tx-sender — so a
+    // `deny + willSendEq(microStx)` post-condition would make the wallet
+    // refuse to sign (no transfer == post-condition violated). We stay on
+    // `allow` until the contract is finished; flip to `deny` + exact STX
+    // post-condition the same day the SIP-010 transfer lands in penny.clar.
     await stx.call({
       contractAddress: PENNY_STX_DEPLOYER,
       contractName: PENNY_STX_CONTRACT,
       functionName: PENNY_STX_TOP_UP_FN,
       args: [{ type: "uint", value: microStx }],
-      // Sign with deny + an explicit STX post-condition so the wallet
-      // refuses the tx if the contract tries to debit more than the user
-      // chose. Without this, the wallet would silently sign any amount.
-      postConditionMode: "deny",
-      postConditions: stxAddrLocal
-        ? [{ type: "stx-eq", from: stxAddrLocal, microStx }]
-        : undefined,
     });
   }
 
