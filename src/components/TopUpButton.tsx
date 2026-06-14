@@ -35,7 +35,7 @@ export function TopUpButton() {
 
   const wei = parseUnits(amount.toString(), 18);
 
-  const { data: allowance } = useReadContract({
+  const { data: allowance, refetch: refetchAllowance } = useReadContract({
     abi: erc20Abi,
     address: CUSD_ADDRESS,
     functionName: "allowance",
@@ -44,8 +44,20 @@ export function TopUpButton() {
   });
 
   const { writeContract, data: hash, reset } = useWriteContract();
-  const { isLoading: mining } = useWaitForTransactionReceipt({ hash });
+  const { isLoading: mining, isSuccess: confirmed } = useWaitForTransactionReceipt({
+    hash,
+    query: { enabled: !!hash },
+  });
   const stx = useStacksWrite();
+
+  // Refetch allowance after the approve receipt confirms so the next click
+  // actually fires Penny.topUp instead of sending a second approve.
+  useEffect(() => {
+    if (confirmed && phase === "approving") {
+      void refetchAllowance();
+      setPhase("depositing");
+    }
+  }, [confirmed, phase, refetchAllowance]);
 
   const [stxAddr, setStxAddr] = useState<string | null>(null);
   useEffect(() => {
