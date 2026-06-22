@@ -124,7 +124,7 @@ export function Leaderboard() {
       </div>
 
       <div className="mt-8 bg-white border border-stone-border rounded-2xl overflow-hidden">
-        <div className="grid grid-cols-[56px_1fr_100px_140px_110px] items-center gap-4 px-6 py-4 bg-stone-surface border-b border-stone-border">
+        <div className="hidden md:grid md:grid-cols-[56px_1fr_100px_140px_110px] md:items-center md:gap-4 px-6 py-4 bg-stone-surface border-b border-stone-border">
           <div className="text-[11px] uppercase tracking-[0.08em] text-stone-text font-mono font-semibold">Rank</div>
           <div className="text-[11px] uppercase tracking-[0.08em] text-stone-text font-mono font-semibold">Address</div>
           <div className="text-[11px] uppercase tracking-[0.08em] text-stone-text font-mono font-semibold text-right">Actions</div>
@@ -147,7 +147,7 @@ export function Leaderboard() {
             {top.map((row, idx) => (
               <li
                 key={row.address}
-                className="grid grid-cols-[56px_1fr_100px_140px_110px] items-center gap-4 px-6 py-4 border-b border-stone-border last:border-b-0 hover:bg-stone-surface transition-colors"
+                className="flex flex-col gap-2 md:grid md:grid-cols-[56px_1fr_100px_140px_110px] md:items-center md:gap-4 px-6 py-4 border-b border-stone-border last:border-b-0 hover:bg-stone-surface transition-colors"
               >
                 <RankCell rank={idx + 1} />
                 <AddressCell address={row.address} breakdown={row.eventBreakdown} chain={chain} />
