@@ -6,7 +6,7 @@ import { NetworkSelector } from "./NetworkSelector";
 export function Header({ compact = false }: { compact?: boolean }) {
   return (
     <header className="sticky top-3 z-40 px-3">
-      <div className="container-page nav-frame flex min-h-[72px] items-center justify-between gap-5 px-5 md:px-6">
+      <div className="container-page nav-frame flex min-h-[60px] md:min-h-[72px] items-center justify-between gap-2 px-3 md:gap-5 md:px-6">
         <Link href="/" className="flex min-w-0 items-center gap-3">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[var(--color-midnight)] font-display text-sm font-bold text-white">
             P
@@ -26,7 +26,7 @@ export function Header({ compact = false }: { compact?: boolean }) {
 
         <div className="flex shrink-0 items-center gap-2">
           <NetworkSelector />
-          {!compact && <div className="hidden lg:block"><BalancePill /></div>}
+          {!compact && <div className="hidden sm:block"><BalancePill /></div>}
           <Link href="/chat" className="hidden sm:inline-flex btn-secondary">Start chat</Link>
           <ConnectButton />
         </div>
