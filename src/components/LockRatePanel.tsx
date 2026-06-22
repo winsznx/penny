@@ -70,6 +70,14 @@ export function LockRatePanel() {
   const { writeContract, data: hash, isPending, reset } = useWriteContract();
   const { isLoading: mining } = useWaitForTransactionReceipt({ hash });
 
+  // Reset any in-flight tx state when the user flips chain. Without this a
+  // stale Celo lockRate hash keeps `useWaitForTransactionReceipt` polling on
+  // wagmi after the user has moved to Stacks (and Stacks shows a celo-only
+  // notice below, so the hash isn't even relevant).
+  useEffect(() => {
+    reset();
+  }, [kind, reset]);
+
   const lockedUntil = account?.rateLockUntil ?? 0n;
   const lockedRate = account?.lockedRate ?? 0n;
   const now = BigInt(nowSec);
