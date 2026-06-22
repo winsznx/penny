@@ -10,7 +10,7 @@ export default function ChatError({
   reset: () => void;
 }) {
   return (
-    <main className="chat-shell flex min-h-screen items-center justify-center px-5">
+    <main className="chat-shell flex min-h-[100svh] items-center justify-center px-5">
       <ErrorState
         title="Chat could not start"
         description="The pre-paid balance read or the rate-locker timed out. Reconnect your wallet and refresh."
