@@ -59,6 +59,12 @@ export function GiftCreditButton() {
     }
   }, [confirmed, hash, refetchAllowance]);
 
+  // Drop any in-flight tx state when the user flips chain — the Stacks branch
+  // below shows a celo-only notice and shouldn't carry over a stale wagmi hash.
+  useEffect(() => {
+    reset();
+  }, [kind, reset]);
+
   function submit() {
     if (!isConnected || !validRecipient || isSelf || amount <= 0) return;
     if (needsApprove) {
