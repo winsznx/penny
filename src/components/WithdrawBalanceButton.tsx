@@ -80,15 +80,18 @@ export function WithdrawBalanceButton() {
             $
           </span>
           <input
-            type="number"
+            type="text"
             inputMode="decimal"
-            min={0}
-            step="0.001"
+            pattern="[0-9]*\.?[0-9]*"
             value={amount === "" ? "" : amount}
             placeholder="0.00"
             onChange={(e) => {
               const v = e.target.value;
-              setAmount(v === "" ? "" : Math.max(0, Number(v)));
+              if (v === "") return setAmount("");
+              if (!/^\d*\.?\d*$/.test(v)) return;
+              const n = Number(v);
+              if (!Number.isFinite(n) || n < 0) return;
+              setAmount(n);
             }}
             disabled={!isConnected || !isPennyDeployed}
             className="w-full pl-7 pr-3 py-2 rounded-lg border border-stone-border bg-warm-stone font-mono text-sm text-midnight disabled:opacity-40"
