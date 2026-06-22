@@ -140,7 +140,7 @@ export function TopUpButton() {
             key={p}
             type="button"
             onClick={() => setAmount(p)}
-            className={`px-3 py-1.5 rounded-full font-mono text-xs border transition-colors ${
+            className={`px-3 py-1.5 min-h-[44px] rounded-full font-mono text-xs border transition-colors ${
               amount === p
                 ? "border-sky-blue text-sky-blue"
                 : "border-stone-border text-stone-text hover:text-midnight"
