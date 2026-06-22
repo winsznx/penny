@@ -55,7 +55,7 @@ export function ChatComposer({ onSubmit, disabled, placeholder = "Ask anythingâ€
       <button
         type="submit"
         disabled={disabled || text.trim() === ""}
-        className="btn-pill-dark min-h-0 px-4 py-2 text-sm disabled:opacity-40"
+        className="btn-pill-dark px-4 text-sm disabled:opacity-40"
       >
         Send
       </button>

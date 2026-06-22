@@ -16,7 +16,7 @@ export default function Chat() {
       <header className="mx-3 mt-3 rounded-xl border border-stone-border bg-white/85 px-5 py-4 shadow-sm backdrop-blur shrink-0 z-10">
         <div className="flex flex-wrap justify-between items-center gap-3">
         <div className="flex items-center gap-4">
-          <Link href="/" className="btn-secondary min-h-0 px-3 py-2">
+          <Link href="/" className="btn-secondary px-3">
             Back
           </Link>
           <div className="font-display font-bold text-xl tracking-tight">Penny</div>
