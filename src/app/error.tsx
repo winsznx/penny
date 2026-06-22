@@ -15,7 +15,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <main className="app-shell flex min-h-screen items-center justify-center bg-warm-stone px-5 py-20">
+    <main className="app-shell flex min-h-[100svh] items-center justify-center bg-warm-stone px-5 py-20">
       <ErrorState
         title="Page failed to render"
         description="An unhandled error caught here. Your balance and chat history are safe — they live on chain."
