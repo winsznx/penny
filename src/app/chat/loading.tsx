@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/Skeleton";
 
 export default function ChatLoading() {
   return (
-    <main className="chat-shell flex min-h-screen flex-col px-3 pt-5">
+    <main className="chat-shell flex min-h-[100svh] flex-col px-3 pt-5">
       <Skeleton className="h-14 w-full" />
       <div className="mt-6 flex-1 space-y-3">
         {Array.from({ length: 6 }).map((_, i) => (
