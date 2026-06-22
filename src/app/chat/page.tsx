@@ -3,6 +3,7 @@ import { ChatComposerClient } from "@/components/ChatComposerClient";
 import { ConnectButton } from "@/components/ConnectButton";
 import { DisputeMessagePanel } from "@/components/DisputeMessagePanel";
 import { GiftCreditButton } from "@/components/GiftCreditButton";
+import { NetworkSelector } from "@/components/NetworkSelector";
 import { TierBreakdown } from "@/components/TierBreakdown";
 import { TopUpButton } from "@/components/TopUpButton";
 import { WithdrawBalanceButton } from "@/components/WithdrawBalanceButton";
@@ -30,6 +31,7 @@ export default function Chat() {
         <div className="flex items-center gap-3 flex-wrap">
           <BalancePill />
           <TopUpButton />
+          <NetworkSelector />
           <ConnectButton />
         </div>
         </div>
