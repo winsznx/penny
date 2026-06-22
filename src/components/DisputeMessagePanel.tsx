@@ -66,7 +66,7 @@ export function DisputeMessagePanel() {
     address: PENNY_ADDRESS,
     functionName: "pendingMessages",
     args: validHash ? [msgHash] : undefined,
-    query: { enabled: validHash && isPennyDeployed, refetchInterval: 20_000 },
+    query: { enabled: validHash && isPennyDeployed && isConnected, refetchInterval: 20_000 },
   });
 
   const tuple = pending as PendingMessageTuple | undefined;
