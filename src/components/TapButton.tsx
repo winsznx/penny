@@ -100,9 +100,19 @@ export function TapButton() {
         {cta}
       </button>
       {hash && (
-        <button type="button" onClick={() => reset()} className="text-xs text-stone-text underline">
-          reset
-        </button>
+        <div className="flex items-center gap-3 text-xs text-stone-text">
+          <a
+            href={`https://celoscan.io/tx/${hash}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-sky-blue underline"
+          >
+            view tx ↗
+          </a>
+          <button type="button" onClick={() => reset()} className="underline">
+            reset
+          </button>
+        </div>
       )}
     </div>
   );
