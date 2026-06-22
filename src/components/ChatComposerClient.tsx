@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { keccak256, toBytes } from "viem";
 import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { useChainKind } from "@/chain/ChainProvider";
@@ -121,12 +121,17 @@ export function ChatComposerClient() {
 
   const txid = kind === "celo" ? hash : stx.txid;
   const [copied, setCopied] = useState(false);
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (copyTimer.current) clearTimeout(copyTimer.current);
+  }, []);
   const copyHash = useCallback(async () => {
     if (!lastMsgHash) return;
     try {
       await navigator.clipboard.writeText(lastMsgHash);
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 1500);
+      if (copyTimer.current) clearTimeout(copyTimer.current);
+      copyTimer.current = setTimeout(() => setCopied(false), 1500);
     } catch {
       /* clipboard may be denied in iframes — fall through silently */
     }
