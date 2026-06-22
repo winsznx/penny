@@ -115,9 +115,14 @@ export function WithdrawBalanceButton() {
 
       {hash && (
         <div className="text-xs text-stone-text flex items-center justify-between">
-          <span>
-            tx <span className="text-midnight">{hash.slice(0, 10)}…</span>
-          </span>
+          <a
+            href={`https://celoscan.io/tx/${hash}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-sky-blue underline"
+          >
+            view tx ↗ <span className="font-mono">({hash.slice(0, 10)}…)</span>
+          </a>
           <button type="button" onClick={() => reset()} className="underline">
             reset
           </button>
