@@ -126,7 +126,7 @@ export function LockRatePanel() {
               key={t.label}
               type="button"
               onClick={() => setTierIdx(idx)}
-              className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
+              className={`px-3 py-1.5 min-h-[44px] rounded-full text-sm border transition-colors ${
                 tierIdx === idx
                   ? "border-sky-blue bg-sky-blue/10 text-sky-blue"
                   : "border-stone-border text-stone-text hover:text-midnight"
@@ -148,7 +148,7 @@ export function LockRatePanel() {
               key={d.label}
               type="button"
               onClick={() => setSecondsIdx(idx)}
-              className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
+              className={`px-3 py-1.5 min-h-[44px] rounded-full text-xs border transition-colors ${
                 secondsIdx === idx
                   ? "border-midnight bg-midnight text-white"
                   : "border-stone-border text-stone-text hover:text-midnight"
