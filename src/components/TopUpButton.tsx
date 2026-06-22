@@ -51,13 +51,27 @@ export function TopUpButton() {
   const stx = useStacksWrite();
 
   // Refetch allowance after the approve receipt confirms so the next click
-  // actually fires Penny.topUp instead of sending a second approve.
+  // actually fires Penny.topUp instead of sending a second approve. Also drop
+  // back to "idle" once the depositing receipt lands so the next top-up
+  // doesn't start mid-flight in a stale phase.
   useEffect(() => {
     if (confirmed && phase === "approving") {
       void refetchAllowance();
       setPhase("depositing");
+    } else if (confirmed && phase === "depositing") {
+      setPhase("idle");
     }
   }, [confirmed, phase, refetchAllowance]);
+
+  // Reset every per-tx state knob (wagmi hash + phase + Stacks txid) when the
+  // user flips chain mid-flight. Without this a half-complete Celo approve
+  // leaks into the Stacks tab as a stale "Approving…" CTA, and vice versa.
+  const stxReset = stx.reset;
+  useEffect(() => {
+    reset();
+    stxReset();
+    setPhase("idle");
+  }, [kind, reset, stxReset]);
 
   const [stxAddr, setStxAddr] = useState<string | null>(null);
   useEffect(() => {
