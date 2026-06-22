@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { useChainKind } from "@/chain/ChainProvider";
 import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
@@ -78,6 +79,13 @@ function MilestoneCell({ threshold, reached }: { threshold: bigint; reached: boo
   const isClaimed = claimed === true || isSuccess;
   const canClaim = isConnected && isPennyDeployed && reached && !isClaimed && !mining && !isPending;
 
+  // Cancel the post-tx refetch timer on unmount so it doesn't fire setState
+  // after the user has navigated away.
+  const refetchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (refetchTimer.current) clearTimeout(refetchTimer.current);
+  }, []);
+
   function submit() {
     writeContract({
       abi: pennyAbi,
@@ -85,7 +93,8 @@ function MilestoneCell({ threshold, reached }: { threshold: bigint; reached: boo
       functionName: "claimMilestone",
       args: [threshold],
     });
-    setTimeout(() => refetch().catch(() => undefined), 6_000);
+    if (refetchTimer.current) clearTimeout(refetchTimer.current);
+    refetchTimer.current = setTimeout(() => refetch().catch(() => undefined), 6_000);
   }
 
   const label = isClaimed
