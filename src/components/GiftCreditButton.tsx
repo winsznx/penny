@@ -150,12 +150,18 @@ export function GiftCreditButton() {
             $
           </span>
           <input
-            type="number"
+            type="text"
             inputMode="decimal"
-            min={0}
-            step="1"
+            pattern="[0-9]*\.?[0-9]*"
             value={amount}
-            onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === "") return setAmount(0);
+              if (!/^\d*\.?\d*$/.test(v)) return;
+              const n = Number(v);
+              if (!Number.isFinite(n) || n < 0) return;
+              setAmount(n);
+            }}
             className="w-full pl-7 pr-3 py-2 rounded-lg border border-stone-border bg-warm-stone font-mono text-sm text-midnight"
           />
         </div>
