@@ -50,7 +50,11 @@ export function TapButton() {
   const { isLoading: mining, isSuccess } = useWaitForTransactionReceipt({ hash });
 
   const lastTs = typeof last === "bigint" ? Number(last) : 0;
-  const secondsLeft = lastTs === 0 ? 0 : Math.max(0, lastTs + COOLDOWN_SEC - nowSec);
+  // nowSec is 0 on first paint (hydration-safe), so secondsLeft would compute
+  // as the entire cooldown duration for cached lastTs values and flash "Wait
+  // Xh Ym" disabled for one frame. Gate on nowSec > 0.
+  const secondsLeft =
+    lastTs === 0 || nowSec === 0 ? 0 : Math.max(0, lastTs + COOLDOWN_SEC - nowSec);
   const onCooldown = secondsLeft > 0;
   const runVal = run !== undefined ? Number(run) : 0;
 
