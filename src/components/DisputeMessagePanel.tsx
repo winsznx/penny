@@ -76,7 +76,9 @@ export function DisputeMessagePanel() {
   const cost = tuple?.[1] ?? 0n;
   const registeredAt = Number(tuple?.[2] ?? 0n);
   const windowEnds = registeredAt + 24 * 60 * 60;
-  const windowClosed = registeredAt > 0 && nowSec > windowEnds;
+  // Gate on nowSec > 0 so a freshly-registered message doesn't flicker as
+  // "windowClosed" when nowSec is still 0 on first paint.
+  const windowClosed = registeredAt > 0 && nowSec > 0 && nowSec > windowEnds;
   const exists =
     tuple && tuple[0] !== "0x0000000000000000000000000000000000000000" && registeredAt > 0;
 
