@@ -81,7 +81,9 @@ export function LockRatePanel() {
   const lockedUntil = account?.rateLockUntil ?? 0n;
   const lockedRate = account?.lockedRate ?? 0n;
   const now = BigInt(nowSec);
-  const lockActive = lockedUntil > now;
+  // Gate on nowSec > 0 so a historical lockedUntil doesn't compute as
+  // ~lockedUntil hours remaining on first paint while nowSec is still 0.
+  const lockActive = nowSec > 0 && lockedUntil > now;
   const secondsRemaining = lockActive ? Number(lockedUntil - now) : 0;
 
   const submit = () => {
