@@ -65,9 +65,12 @@ export function GiftCreditButton() {
     reset();
   }, [kind, reset]);
 
+  const [lastAction, setLastAction] = useState<"approve" | "gift" | null>(null);
+
   function submit() {
     if (!isConnected || !validRecipient || isSelf || amount <= 0) return;
     if (needsApprove) {
+      setLastAction("approve");
       writeContract({
         abi: erc20Abi,
         address: CUSD_ADDRESS,
@@ -76,6 +79,7 @@ export function GiftCreditButton() {
       });
       return;
     }
+    setLastAction("gift");
     writeContract({
       abi: pennyAbi,
       address: PENNY_ADDRESS,
@@ -192,9 +196,14 @@ export function GiftCreditButton() {
           </button>
         </div>
       )}
-      {confirmed && (
+      {confirmed && lastAction === "gift" && (
         <p className="text-xs text-emerald-600">
           Gift confirmed. ${amount} credit lands in their Penny vault on next block.
+        </p>
+      )}
+      {confirmed && lastAction === "approve" && (
+        <p className="text-xs text-stone-text">
+          Approve confirmed. Tap Gift again to send the credit.
         </p>
       )}
     </div>
