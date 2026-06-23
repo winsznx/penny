@@ -43,7 +43,7 @@ export function TopUpButton() {
     query: { enabled: kind === "celo" && isConnected && isPennyDeployed && !!address },
   });
 
-  const { writeContract, data: hash, reset } = useWriteContract();
+  const { writeContract, data: hash, reset, error: writeError } = useWriteContract();
   const { isLoading: mining, isSuccess: confirmed } = useWaitForTransactionReceipt({
     hash,
     query: { enabled: !!hash },
@@ -62,6 +62,12 @@ export function TopUpButton() {
       setPhase("idle");
     }
   }, [confirmed, phase, refetchAllowance]);
+
+  // Drop phase on wallet reject / contract revert so the CTA stops claiming
+  // "Approving…" after a failed tx.
+  useEffect(() => {
+    if (writeError || stx.error) setPhase("idle");
+  }, [writeError, stx.error]);
 
   // Reset every per-tx state knob (wagmi hash + phase + Stacks txid) when the
   // user flips chain mid-flight. Without this a half-complete Celo approve
@@ -183,6 +189,11 @@ export function TopUpButton() {
         >
           reset
         </button>
+      )}
+      {writeError && (
+        <span className="text-xs text-red-600 font-mono">
+          {writeError.message.split("\n")[0]}
+        </span>
       )}
       {stx.error && (
         <span className="text-xs text-red-600 font-mono">{stx.error}</span>
