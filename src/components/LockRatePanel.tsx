@@ -85,6 +85,11 @@ export function LockRatePanel() {
   const secondsRemaining = lockActive ? Number(lockedUntil - now) : 0;
 
   const submit = () => {
+    // Lock-rate lives on the Celo contract; the Stacks branch above already
+    // renders a celo-only notice. Guard submit() too so a connected wagmi
+    // wallet still in Stacks mode can't fire a Celo write through the still-
+    // mounted button.
+    if (kind !== "celo") return;
     if (!isConnected || !isPennyDeployed) return;
     const tier = TIERS[tierIdx];
     const duration = DURATIONS[secondsIdx];
@@ -96,7 +101,7 @@ export function LockRatePanel() {
     });
   };
 
-  const disabled = !isConnected || !isPennyDeployed || mining || isPending;
+  const disabled = kind !== "celo" || !isConnected || !isPennyDeployed || mining || isPending;
 
   return (
     <div className="feature-card space-y-4">
