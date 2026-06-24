@@ -2,7 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { keccak256, toBytes } from "viem";
-import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useReadContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import { useChainKind } from "@/chain/ChainProvider";
 import { connectStacks, readStacksSession } from "@/chain/stacksSession";
 import { useStacksWrite } from "@/chain/useStacksWrite";
@@ -46,6 +51,42 @@ export function ChatComposerClient() {
   const [lastMsgHash, setLastMsgHash] = useState<`0x${string}` | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
 
+  // Pre-flight: read whether the Haiku tier is registered AND active. Without
+  // this, submitting against a paused/unregistered tier reverts with the
+  // opaque `PennyTierUnknown` (or inactive) revert and the user sees the raw
+  // wagmi error message instead of a friendly explanation.
+  const { data: tierId } = useReadContract({
+    abi: pennyAbi,
+    address: PENNY_ADDRESS,
+    functionName: "tierIdOf",
+    args: [HAIKU_TIER],
+    query: { enabled: kind === "celo" && isPennyDeployed, refetchInterval: 60_000 },
+  });
+  const { data: tierTuple } = useReadContract({
+    abi: pennyAbi,
+    address: PENNY_ADDRESS,
+    functionName: "tiers",
+    args: typeof tierId === "bigint" && tierId > 0n ? [tierId] : undefined,
+    query: {
+      enabled:
+        kind === "celo" &&
+        isPennyDeployed &&
+        typeof tierId === "bigint" &&
+        tierId > 0n,
+      refetchInterval: 60_000,
+    },
+  });
+  // viem decodes single-tuple outputs as objects; tiers' output isn't a struct
+  // (it's multiple named outputs), so it comes back as an array-with-named-
+  // keys. Read by name where possible.
+  const tierActive =
+    tierTuple && typeof (tierTuple as { active?: boolean }).active === "boolean"
+      ? (tierTuple as { active: boolean }).active
+      : Array.isArray(tierTuple)
+        ? Boolean((tierTuple as unknown[])[2])
+        : null;
+  const tierKnown = typeof tierId === "bigint" && tierId > 0n;
+
   async function send(text: string) {
     const trimmed = text.trim();
     if (!trimmed) return;
@@ -63,6 +104,14 @@ export function ChatComposerClient() {
       }
       if (!isPennyDeployed) {
         setLocalError("Penny contract not deployed on this network.");
+        return;
+      }
+      if (!tierKnown) {
+        setLocalError("Haiku tier not registered on this contract yet — ops needs to register it.");
+        return;
+      }
+      if (tierActive === false) {
+        setLocalError("Haiku tier is paused right now. Switch chain or wait for ops to re-enable it.");
         return;
       }
       // reportedCost left at 0 — the relay path normally fills this; here we
