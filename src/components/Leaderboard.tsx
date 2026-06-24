@@ -181,15 +181,22 @@ function ChainToggle({ chain, onChange }: { chain: ChainTab; onChange: (c: Chain
     { id: "stacks", label: "Stacks", hint: "Hiro mainnet" },
   ];
   return (
-    <div className="inline-flex rounded-full border border-stone-border bg-stone-surface p-1" role="tablist" aria-label="Chain selector">
+    <div
+      role="group"
+      aria-label="Chain selector"
+      className="inline-flex rounded-full border border-stone-border bg-stone-surface p-1"
+    >
+      {/* role=tablist requires a matching tabpanel with aria-controls — we
+          don't render one (the rest of the page is the panel implicitly), so
+          using the simpler role=group + aria-pressed pattern that
+          NetworkSelector already uses keeps the ARIA contract honest. */}
       {tabs.map((t) => {
         const active = t.id === chain;
         return (
           <button
             key={t.id}
             type="button"
-            role="tab"
-            aria-selected={active}
+            aria-pressed={active}
             onClick={() => onChange(t.id)}
             className={`rounded-full px-4 py-1.5 text-[12px] font-mono transition-colors ${
               active ? "bg-white text-midnight shadow-sm" : "text-stone-text hover:text-midnight"
