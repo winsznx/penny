@@ -122,6 +122,7 @@ function MilestoneCell({ threshold, reached }: { threshold: bigint; reached: boo
         type="button"
         onClick={submit}
         disabled={!canClaim}
+        aria-busy={mining || isPending}
         className={`mt-1 text-[11px] font-medium ${
           isClaimed
             ? "text-emerald-700"

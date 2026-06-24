@@ -118,6 +118,7 @@ export function WithdrawBalanceButton() {
         type="button"
         onClick={submit}
         disabled={!enabled}
+        aria-busy={mining || isPending}
         className="w-full btn-pill-dark text-sm disabled:opacity-40"
       >
         {mining ? "Mining…" : isPending ? "Waiting for wallet…" : "Withdraw to wallet"}

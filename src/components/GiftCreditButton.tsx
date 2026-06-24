@@ -191,6 +191,7 @@ export function GiftCreditButton() {
         type="button"
         onClick={submit}
         disabled={!!reason || mining || isPending}
+        aria-busy={mining || isPending}
         className="w-full btn-pill-dark text-sm disabled:opacity-40"
       >
         {cta}

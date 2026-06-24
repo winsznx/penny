@@ -194,6 +194,7 @@ export function LockRatePanel() {
           type="button"
           onClick={submit}
           disabled={disabled}
+        aria-busy={mining || isPending}
           className="btn-pill-dark w-full text-sm disabled:opacity-40"
         >
           {mining

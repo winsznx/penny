@@ -190,6 +190,7 @@ export function DisputeMessagePanel() {
         type="button"
         onClick={submit}
         disabled={!eligible || mining || isPending}
+        aria-busy={mining || isPending}
         className="w-full btn-pill-dark text-sm disabled:opacity-40"
       >
         {mining ? "Mining…" : isPending ? "Waiting for wallet…" : "Open dispute"}
