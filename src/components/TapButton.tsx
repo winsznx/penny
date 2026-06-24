@@ -99,6 +99,7 @@ export function TapButton() {
         type="button"
         onClick={submit}
         disabled={!canSubmit}
+        aria-busy={mining || isPending}
         className="btn-pill-dark text-sm disabled:opacity-40"
       >
         {cta}
