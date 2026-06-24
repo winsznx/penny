@@ -117,10 +117,14 @@ export function GiftCreditButton() {
       </div>
 
       <div>
-        <label className="text-xs font-mono uppercase tracking-widest text-stone-text block mb-1">
+        <label
+          htmlFor="gift-recipient"
+          className="text-xs font-mono uppercase tracking-widest text-stone-text block mb-1"
+        >
           Recipient
         </label>
         <input
+          id="gift-recipient"
           type="text"
           value={recipient}
           onChange={(e) => setRecipient(e.target.value.trim())}
@@ -130,7 +134,10 @@ export function GiftCreditButton() {
       </div>
 
       <div>
-        <label className="text-xs font-mono uppercase tracking-widest text-stone-text block mb-1">
+        <label
+          htmlFor="gift-amount"
+          className="text-xs font-mono uppercase tracking-widest text-stone-text block mb-1"
+        >
           Amount
         </label>
         <div className="flex gap-2 mb-2 flex-wrap">
@@ -155,6 +162,7 @@ export function GiftCreditButton() {
             $
           </span>
           <input
+            id="gift-amount"
             type="text"
             inputMode="decimal"
             pattern="[0-9]*\.?[0-9]*"
