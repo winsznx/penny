@@ -70,6 +70,40 @@ export function LockRatePanel() {
   const { writeContract, data: hash, isPending, reset } = useWriteContract();
   const { isLoading: mining } = useWaitForTransactionReceipt({ hash });
 
+  // Pre-flight: is the selected tier registered AND active? Without this
+  // pre-check the lockRate call against a paused tier reverts with the
+  // opaque PennyTierUnknown and the user sees a raw RPC error string.
+  const selectedTierId = TIERS[tierIdx].id;
+  const { data: tierIdNum } = useReadContract({
+    abi: pennyAbi,
+    address: PENNY_ADDRESS,
+    functionName: "tierIdOf",
+    args: [selectedTierId],
+    query: { enabled: kind === "celo" && isPennyDeployed, refetchInterval: 60_000 },
+  });
+  const { data: tierTuple } = useReadContract({
+    abi: pennyAbi,
+    address: PENNY_ADDRESS,
+    functionName: "tiers",
+    args: typeof tierIdNum === "bigint" && tierIdNum > 0n ? [tierIdNum] : undefined,
+    query: {
+      enabled:
+        kind === "celo" &&
+        isPennyDeployed &&
+        typeof tierIdNum === "bigint" &&
+        tierIdNum > 0n,
+      refetchInterval: 60_000,
+    },
+  });
+  const tierActive =
+    tierTuple && typeof (tierTuple as { active?: boolean }).active === "boolean"
+      ? (tierTuple as { active: boolean }).active
+      : Array.isArray(tierTuple)
+        ? Boolean((tierTuple as unknown[])[2])
+        : null;
+  const tierKnown = typeof tierIdNum === "bigint" && tierIdNum > 0n;
+  const tierBlocked = kind === "celo" && tierKnown && tierActive === false;
+
   // Reset any in-flight tx state when the user flips chain. Without this a
   // stale Celo lockRate hash keeps `useWaitForTransactionReceipt` polling on
   // wagmi after the user has moved to Stacks (and Stacks shows a celo-only
@@ -93,6 +127,7 @@ export function LockRatePanel() {
     // mounted button.
     if (kind !== "celo") return;
     if (!isConnected || !isPennyDeployed) return;
+    if (tierKnown && tierActive === false) return;
     const tier = TIERS[tierIdx];
     const duration = DURATIONS[secondsIdx];
     writeContract({
@@ -103,7 +138,13 @@ export function LockRatePanel() {
     });
   };
 
-  const disabled = kind !== "celo" || !isConnected || !isPennyDeployed || mining || isPending;
+  const disabled =
+    kind !== "celo" ||
+    !isConnected ||
+    !isPennyDeployed ||
+    mining ||
+    isPending ||
+    tierBlocked;
 
   return (
     <div className="feature-card space-y-4">
@@ -117,6 +158,12 @@ export function LockRatePanel() {
         Pick a tier + duration. While the lock is active your debits price at the snapshot rate
         regardless of admin tier updates.
       </p>
+
+      {tierBlocked && (
+        <div className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-xs text-amber-900">
+          {TIERS[tierIdx].label} is paused right now — wait for ops to re-enable it before locking.
+        </div>
+      )}
 
       {kind === "stacks" && (
         <div className="rounded-lg border border-stone-border bg-stone-surface px-4 py-3 text-xs text-stone-text">
