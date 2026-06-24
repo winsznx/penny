@@ -136,10 +136,14 @@ export function DisputeMessagePanel() {
       </div>
 
       <div>
-        <label className="text-xs font-mono uppercase tracking-widest text-stone-text block mb-1">
+        <label
+          htmlFor="dispute-msg-hash"
+          className="text-xs font-mono uppercase tracking-widest text-stone-text block mb-1"
+        >
           Message hash
         </label>
         <input
+          id="dispute-msg-hash"
           type="text"
           value={msgHash}
           onChange={(e) => setMsgHash(e.target.value.trim())}
@@ -149,10 +153,14 @@ export function DisputeMessagePanel() {
       </div>
 
       <div>
-        <label className="text-xs font-mono uppercase tracking-widest text-stone-text block mb-1">
+        <label
+          htmlFor="dispute-reason"
+          className="text-xs font-mono uppercase tracking-widest text-stone-text block mb-1"
+        >
           Reason
         </label>
         <select
+          id="dispute-reason"
           value={reason}
           onChange={(e) => setReason(e.target.value as typeof reason)}
           className="w-full font-body text-sm px-3 py-2 rounded-lg border border-stone-border bg-warm-stone text-midnight"

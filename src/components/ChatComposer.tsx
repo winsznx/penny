@@ -49,6 +49,7 @@ export function ChatComposer({ onSubmit, disabled, placeholder = "Ask anythingâ€
           }
         }}
         placeholder={placeholder}
+        aria-label="Message"
         rows={1}
         className="flex-1 resize-none bg-transparent px-3 py-2 text-sm text-midnight outline-none placeholder:text-stone-text"
       />
