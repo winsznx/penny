@@ -159,6 +159,7 @@ export function TopUpButton() {
           <button
             key={p}
             type="button"
+            aria-pressed={amount === p}
             onClick={() => setAmount(p)}
             className={`px-3 py-1.5 min-h-[44px] rounded-full font-mono text-xs border transition-colors ${
               amount === p

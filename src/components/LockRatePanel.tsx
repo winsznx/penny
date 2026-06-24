@@ -140,6 +140,7 @@ export function LockRatePanel() {
             <button
               key={t.label}
               type="button"
+              aria-pressed={tierIdx === idx}
               onClick={() => setTierIdx(idx)}
               className={`px-3 py-1.5 min-h-[44px] rounded-full text-sm border transition-colors ${
                 tierIdx === idx
@@ -162,6 +163,7 @@ export function LockRatePanel() {
             <button
               key={d.label}
               type="button"
+              aria-pressed={secondsIdx === idx}
               onClick={() => setSecondsIdx(idx)}
               className={`px-3 py-1.5 min-h-[44px] rounded-full text-xs border transition-colors ${
                 secondsIdx === idx
