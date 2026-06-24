@@ -38,7 +38,14 @@ export function WithdrawBalanceButton() {
   const balanceBn = (balance as bigint | undefined) ?? 0n;
   const balanceStr = Number(formatUnits(balanceBn, 18)).toFixed(4);
 
-  const wei = typeof amount === "number" && amount > 0 ? parseUnits(amount.toString(), 18) : 0n;
+  const wei = (() => {
+    if (typeof amount !== "number" || amount <= 0) return 0n;
+    try {
+      return parseUnits(amount.toString(), 18);
+    } catch {
+      return 0n;
+    }
+  })();
   const enabled =
     isConnected && isPennyDeployed && balanceBn > 0n && wei > 0n && wei <= balanceBn && !mining && !isPending;
 

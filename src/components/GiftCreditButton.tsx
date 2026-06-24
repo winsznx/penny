@@ -33,7 +33,14 @@ export function GiftCreditButton() {
   const recipientLower = validRecipient ? (recipient.toLowerCase() as `0x${string}`) : undefined;
   const isSelf = recipientLower && address && recipientLower === address.toLowerCase();
 
-  const wei = parseUnits(amount.toString(), 18);
+  const wei = (() => {
+    if (!(amount > 0)) return 0n;
+    try {
+      return parseUnits(amount.toString(), 18);
+    } catch {
+      return 0n;
+    }
+  })();
 
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
     abi: erc20Abi,
