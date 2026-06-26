@@ -18,6 +18,7 @@ import {
 } from "@/chain/stacksContracts";
 import { pennyAbi } from "@/lib/abi/penny";
 import { HAIKU_TIER, PENNY_ADDRESS, isPennyDeployed } from "@/lib/wagmi";
+import { readTierActive } from "@/lib/tiers";
 import { ChatComposer } from "@/components/ChatComposer";
 
 /**
@@ -79,12 +80,7 @@ export function ChatComposerClient() {
   // viem decodes single-tuple outputs as objects; tiers' output isn't a struct
   // (it's multiple named outputs), so it comes back as an array-with-named-
   // keys. Read by name where possible.
-  const tierActive =
-    tierTuple && typeof (tierTuple as { active?: boolean }).active === "boolean"
-      ? (tierTuple as { active: boolean }).active
-      : Array.isArray(tierTuple)
-        ? Boolean((tierTuple as unknown[])[2])
-        : null;
+  const tierActive = readTierActive(tierTuple);
   const tierKnown = typeof tierId === "bigint" && tierId > 0n;
 
   async function send(text: string) {

@@ -11,6 +11,7 @@ import {
 } from "wagmi";
 import { useChainKind } from "@/chain/ChainProvider";
 import { pennyAbi } from "@/lib/abi/penny";
+import { readTierActive } from "@/lib/tiers";
 import {
   HAIKU_TIER,
   OPUS_TIER,
@@ -95,12 +96,7 @@ export function LockRatePanel() {
       refetchInterval: 60_000,
     },
   });
-  const tierActive =
-    tierTuple && typeof (tierTuple as { active?: boolean }).active === "boolean"
-      ? (tierTuple as { active: boolean }).active
-      : Array.isArray(tierTuple)
-        ? Boolean((tierTuple as unknown[])[2])
-        : null;
+  const tierActive = readTierActive(tierTuple);
   const tierKnown = typeof tierIdNum === "bigint" && tierIdNum > 0n;
   const tierBlocked = kind === "celo" && tierKnown && tierActive === false;
 

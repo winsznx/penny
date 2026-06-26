@@ -62,18 +62,24 @@ export function TopUpButton() {
   // back to "idle" once the depositing receipt lands so the next top-up
   // doesn't start mid-flight in a stale phase.
   useEffect(() => {
+    let nextPhase: typeof phase | null = null;
     if (confirmed && phase === "approving") {
       void refetchAllowance();
-      setPhase("depositing");
+      nextPhase = "depositing";
     } else if (confirmed && phase === "depositing") {
-      setPhase("idle");
+      nextPhase = "idle";
     }
+    if (!nextPhase) return;
+    const id = window.setTimeout(() => setPhase(nextPhase), 0);
+    return () => window.clearTimeout(id);
   }, [confirmed, phase, refetchAllowance]);
 
   // Drop phase on wallet reject / contract revert so the CTA stops claiming
   // "Approving…" after a failed tx.
   useEffect(() => {
-    if (writeError || stx.error) setPhase("idle");
+    if (!writeError && !stx.error) return;
+    const id = window.setTimeout(() => setPhase("idle"), 0);
+    return () => window.clearTimeout(id);
   }, [writeError, stx.error]);
 
   // Reset every per-tx state knob (wagmi hash + phase + Stacks txid) when the
@@ -83,13 +89,15 @@ export function TopUpButton() {
   useEffect(() => {
     reset();
     stxReset();
-    setPhase("idle");
+    const id = window.setTimeout(() => setPhase("idle"), 0);
+    return () => window.clearTimeout(id);
   }, [kind, reset, stxReset]);
 
   const [stxAddr, setStxAddr] = useState<string | null>(null);
   useEffect(() => {
     if (kind !== "stacks") return;
-    setStxAddr(readStacksSession().address);
+    const id = window.setTimeout(() => setStxAddr(readStacksSession().address), 0);
+    return () => window.clearTimeout(id);
   }, [kind]);
 
   const presets = kind === "celo" ? PRESETS_CELO : PRESETS_STACKS;
